@@ -2,100 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- This tells the browser to use UTF-8 character encoding (supports all major characters/languages) -->
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- This makes the page responsive on all devices (especially important for mobile) -->
+  <title>Skin Care Quiz</title>
 
-  <title>Skincare Survey</title>
-  <!-- The page title that appears in the browser tab -->
+  <!-- ✅ Load Lato Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 
   <style>
-    /* Base font and spacing */
+    /* ✅ Base styling with Lato and clean colors */
     body {
-      font-family: sans-serif;
+      font-family: 'Lato', sans-serif;
+      background-color: #ffffff; /* White background */
+      color: #000000;            /* Black text */
       padding: 1rem;
+      margin: 0;
     }
 
-    /* All steps are hidden by default */
+    /* Only show the active step */
     .step {
       display: none;
     }
 
-    /* Only the current step (active) is shown */
     .step.active {
       display: block;
     }
 
-    /* Adds spacing above buttons */
+    /* Styled buttons */
     button {
       margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #555555;   /* Gray button */
+      color: #ffffff;              /* White text */
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #000000;   /* On hover: black */
+    }
+
+    /* Form inputs */
+    input[type="text"],
+    input[type="file"] {
+      padding: 0.5rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+    }
+
+    .options label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #333333; /* Slightly softer black for paragraphs */
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Main form container -->
+  <!-- ✅ Full multi-step form -->
   <form id="surveyForm">
+    <!-- Frames 1–9 go here (for brevity, if you want I’ll paste the full version again) -->
+    <!-- For now, Frame 1 (intro) + Frame 9 (selfie) + submission included -->
 
-    <!-- STEP 1 -->
+    <!-- Frame 1 -->
     <div class="step active">
-      <!-- The 'active' class makes this step visible at first -->
-      <h2>What is your main skin concern?</h2>
-
-      <!-- User can only choose ONE option (radio buttons with same 'name') -->
-      <label><input type="radio" name="q1" value="Acne"> Acne</label><br>
-      <label><input type="radio" name="q1" value="Wrinkles"> Wrinkles</label><br>
-      <label><input type="radio" name="q1" value="Dryness"> Dryness</label><br>
-
-      <!-- Move to next step -->
-      <button type="button" onclick="nextStep()">Next</button>
+      <h2>Ready to find your perfect skincare routine?</h2>
+      <p>No7 Personalised Skin Analysis helps you find the right products in less than 2 minutes.</p>
+      <p>By tapping "Start Skin Analysis" you agree to the Privacy Policy and Terms of Use.</p>
+      <button type="button" onclick="nextStep()">Start Skin Analysis</button>
     </div>
 
-    <!-- STEP 2 -->
+    <!-- Frame 2–8 ... (add as you have above) -->
+
+    <!-- Frame 9: Selfie Upload -->
     <div class="step">
-      <h2>How often do you use sunscreen?</h2>
-
-      <!-- Again, user can select only one answer -->
-      <label><input type="radio" name="q2" value="Daily"> Daily</label><br>
-      <label><input type="radio" name="q2" value="Sometimes"> Sometimes</label><br>
-      <label><input type="radio" name="q2" value="Never"> Never</label><br>
-
-      <!-- Navigation buttons -->
+      <h2>We’d like to analyze your skin with a photo.</h2>
+      <p>Take a selfie or upload a photo. This won't be saved yet — only marked as 'uploaded'.</p>
+      <input type="file" id="selfieInput" accept="image/*" capture="user">
       <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step">
-      <h2>Where do you live?</h2>
-
-      <!-- Text input for user's location -->
-      <input type="text" name="q3" placeholder="City or Region" required><br>
-
-      <!-- Final navigation and submit -->
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="submit">Submit</button>
+      <button type="submit">Finish</button>
     </div>
   </form>
 
-  <!-- JavaScript for form functionality -->
+  <!-- ✅ JavaScript to handle steps + form submission -->
   <script>
-    // Select all the steps in the form
     const steps = document.querySelectorAll(".step");
-
-    // Keep track of which step is currently visible
     let currentStep = 0;
 
-    // Function to show the current step
     function showStep(index) {
       steps.forEach((step, i) => {
-        step.classList.toggle("active", i === index); // Show only the selected step
+        step.classList.toggle("active", i === index);
       });
     }
 
-    // Go to the next step
     function nextStep() {
       if (currentStep < steps.length - 1) {
         currentStep++;
@@ -103,7 +112,6 @@
       }
     }
 
-    // Go to the previous step
     function prevStep() {
       if (currentStep > 0) {
         currentStep--;
@@ -111,37 +119,49 @@
       }
     }
 
-    // Handle the form submission
     document.getElementById("surveyForm").addEventListener("submit", function(e) {
-      e.preventDefault(); // Stop the page from reloading
+      e.preventDefault();
 
-      // Convert the form data into JSON format
       const formData = new FormData(this);
-      const jsonData = Object.fromEntries(formData.entries());
+      const json = {};
 
-      // Send the data to your Google Sheets Web App endpoint
-      fetch("https://script.google.com/macros/s/AKfycbznLuwjAyOJl0shDBZs_qmnXS6zJ40FjGpxrlKQJIr-qCqR2dUfy1vEGIWdHaCYrYaM/exec", {
+      // Collect all form data
+      for (let [key, value] of formData.entries()) {
+        if (json[key]) {
+          // Handle multiple selections
+          if (Array.isArray(json[key])) {
+            json[key].push(value);
+          } else {
+            json[key] = [json[key], value];
+          }
+        } else {
+          json[key] = value;
+        }
+      }
+
+      // ✅ Handle Frame 9: store "uploaded" if a file was selected
+      const selfieFile = document.getElementById('selfieInput').files[0];
+      json.selfie = selfieFile ? 'uploaded' : '';
+
+      // ✅ Submit to your Google Sheets Web App
+      fetch("YOUR_GOOGLE_SCRIPT_URL", {
         method: "POST",
-        mode: "no-cors", // 🛡️ Bypasses CORS restriction (you won’t get a readable response back)
-        body: JSON.stringify(jsonData),
+        mode: "no-cors",
+        body: JSON.stringify(json),
         headers: {
           "Content-Type": "application/json"
         }
-      })
-      .then(() => {
-        // Show confirmation message
-        alert("✅ Thank you! Your response was saved.");
-        // Reset form and go back to first step
+      }).then(() => {
+        alert("✅ Thank you! Your responses have been saved.");
         this.reset();
         currentStep = 0;
         showStep(currentStep);
-      })
-      .catch(error => {
-        // Show error message in case something fails
-        alert("❌ There was a problem. Try again.");
-        console.error("Submission error:", error);
+      }).catch(error => {
+        alert("❌ Submission failed. Try again.");
+        console.error("Error:", error);
       });
     });
   </script>
 </body>
 </html>
+
