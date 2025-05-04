@@ -5,44 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Skin Care Quiz</title>
 
-  <!-- ✅ Load Lato Font from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-
+  <!-- ✅ Styling -->
   <style>
-    /* ✅ Base styling with Lato and clean colors */
+    /* Basic font, color, spacing for body */
     body {
-      font-family: 'Lato', sans-serif;
-      background-color: #ffffff; /* White background */
-      color: #000000;            /* Black text */
+      font-family: Helvetica, Arial, sans-serif; /* ✅ Font: Helvetica */
+      background-color: #ffffff; /* ✅ Background: White */
+      color: #000000;            /* ✅ Font color: Black */
       padding: 1rem;
       margin: 0;
     }
 
-    /* Only show the active step */
+    /* Steps hidden unless active */
     .step {
       display: none;
     }
 
+    /* Only active step is visible */
     .step.active {
       display: block;
     }
 
-    /* Styled buttons */
+    /* Button styling */
     button {
       margin-top: 1rem;
       padding: 0.75rem 1.5rem;
-      background-color: #555555;   /* Gray button */
-      color: #ffffff;              /* White text */
+      background-color: #333333;   /* ✅ Gray background */
+      color: #ffffff;              /* ✅ White text */
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #000000;   /* On hover: black */
+      background-color: #000000;   /* ✅ Hover: Black */
     }
 
-    /* Form inputs */
+    /* Label and input layout */
+    .options label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+
     input[type="text"],
     input[type="file"] {
       padding: 0.5rem;
@@ -52,29 +56,22 @@
       border-radius: 4px;
     }
 
-    .options label {
-      display: block;
-      margin: 0.5rem 0;
-    }
-
     h2 {
       margin-bottom: 0.5rem;
     }
 
     p {
-      color: #333333; /* Slightly softer black for paragraphs */
+      color: #333333; /* ✅ Slightly softer black for descriptions */
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ✅ Full multi-step form -->
+  <!-- ✅ Main form container for all 9 steps -->
   <form id="surveyForm">
-    <!-- Frames 1–9 go here (for brevity, if you want I’ll paste the full version again) -->
-    <!-- For now, Frame 1 (intro) + Frame 9 (selfie) + submission included -->
 
-    <!-- Frame 1 -->
+    <!-- 🔹 FRAME 1: Introduction -->
     <div class="step active">
       <h2>Ready to find your perfect skincare routine?</h2>
       <p>No7 Personalised Skin Analysis helps you find the right products in less than 2 minutes.</p>
@@ -82,86 +79,58 @@
       <button type="button" onclick="nextStep()">Start Skin Analysis</button>
     </div>
 
-    <!-- Frame 2–8 ... (add as you have above) -->
-
-    <!-- Frame 9: Selfie Upload -->
+    <!-- 🔹 FRAME 2: Skin Type (single choice) -->
     <div class="step">
-      <h2>We’d like to analyze your skin with a photo.</h2>
-      <p>Take a selfie or upload a photo. This won't be saved yet — only marked as 'uploaded'.</p>
-      <input type="file" id="selfieInput" accept="image/*" capture="user">
+      <h2>What is your skin type?</h2>
+      <p>Understanding your skin type helps us recommend the best products.</p>
+      <div class="options">
+        <label><input type="radio" name="skin_type" value="Normal"> Normal</label>
+        <label><input type="radio" name="skin_type" value="Dry"> Dry</label>
+        <label><input type="radio" name="skin_type" value="Oily"> Oily</label>
+        <label><input type="radio" name="skin_type" value="Combination"> Combination</label>
+        <label><input type="radio" name="skin_type" value="Not Sure"> Not Sure</label>
+      </div>
       <button type="button" onclick="prevStep()">Back</button>
-      <button type="submit">Finish</button>
+      <button type="button" onclick="nextStep()">Next</button>
     </div>
-  </form>
 
-  <!-- ✅ JavaScript to handle steps + form submission -->
-  <script>
-    const steps = document.querySelectorAll(".step");
-    let currentStep = 0;
+    <!-- 🔹 FRAME 3: Sensitive Skin (yes/no) -->
+    <div class="step">
+      <h2>Do you have sensitive skin?</h2>
+      <div class="options">
+        <label><input type="radio" name="sensitive_skin" value="Yes"> Yes</label>
+        <label><input type="radio" name="sensitive_skin" value="No"> No</label>
+      </div>
+      <button type="button" onclick="prevStep()">Back</button>
+      <button type="button" onclick="nextStep()">Next</button>
+    </div>
 
-    function showStep(index) {
-      steps.forEach((step, i) => {
-        step.classList.toggle("active", i === index);
-      });
-    }
+    <!-- 🔹 FRAME 4: Skin Concerns (multi-choice) -->
+    <div class="step">
+      <h2>Do you have any personal skin concerns?</h2>
+      <div class="options">
+        <!-- User can check multiple boxes -->
+        <label><input type="checkbox" name="skin_concerns" value="Fine Lines & Wrinkles"> Fine Lines & Wrinkles</label>
+        <label><input type="checkbox" name="skin_concerns" value="Under Eye Puffiness"> Under Eye Puffiness</label>
+        <label><input type="checkbox" name="skin_concerns" value="Redness"> Redness</label>
+        <label><input type="checkbox" name="skin_concerns" value="Dull/Tired Skin"> Dull/Tired Skin</label>
+        <label><input type="checkbox" name="skin_concerns" value="Dryness"> Dryness</label>
+        <label><input type="checkbox" name="skin_concerns" value="Dark Circles"> Dark Circles</label>
+        <label><input type="checkbox" name="skin_concerns" value="Visible Pores"> Visible Pores</label>
+        <label><input type="checkbox" name="skin_concerns" value="Lack of Firmness"> Lack of Firmness</label>
+        <label><input type="checkbox" name="skin_concerns" value="Hyperpigmentation"> Hyperpigmentation</label>
+        <label><input type="checkbox" name="skin_concerns" value="Spots & Blemishes"> Spots & Blemishes</label>
+        <label><input type="checkbox" name="skin_concerns" value="Oiliness"> Oiliness</label>
+        <label><input type="checkbox" name="skin_concerns" value="Dark Spots"> Dark Spots / Age Spots</label>
+      </div>
+      <button type="button" onclick="prevStep()">Back</button>
+      <button type="button" onclick="nextStep()">Next</button>
+    </div>
 
-    function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-      }
-    }
-
-    function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-      }
-    }
-
-    document.getElementById("surveyForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const formData = new FormData(this);
-      const json = {};
-
-      // Collect all form data
-      for (let [key, value] of formData.entries()) {
-        if (json[key]) {
-          // Handle multiple selections
-          if (Array.isArray(json[key])) {
-            json[key].push(value);
-          } else {
-            json[key] = [json[key], value];
-          }
-        } else {
-          json[key] = value;
-        }
-      }
-
-      // ✅ Handle Frame 9: store "uploaded" if a file was selected
-      const selfieFile = document.getElementById('selfieInput').files[0];
-      json.selfie = selfieFile ? 'uploaded' : '';
-
-      // ✅ Submit to your Google Sheets Web App
-      fetch("YOUR_GOOGLE_SCRIPT_URL", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(json),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(() => {
-        alert("✅ Thank you! Your responses have been saved.");
-        this.reset();
-        currentStep = 0;
-        showStep(currentStep);
-      }).catch(error => {
-        alert("❌ Submission failed. Try again.");
-        console.error("Error:", error);
-      });
-    });
-  </script>
-</body>
-</html>
+    <!-- 🔹 FRAME 5: Environmental Factors (multi-choice) -->
+    <div class="step">
+      <h2>Do any of these factors affect your skin?</h2>
+      <div class="options">
+        <label><input type="checkbox" name="environmental_factors" value="Sun Exposure"> Sun Exposure</label>
+        <label><input type="checkbox" name="
 
