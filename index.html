@@ -5,260 +5,265 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Skin Care Quiz</title>
 
-  <!-- ✅ Load Lato Font from Google Fonts -->
+  <!-- ✅ Load Lato font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 
   <style>
-    /* ✅ Base styling with Lato and clean colors */
-    body {
-      font-family: 'Lato', sans-serif;
-      background-color: #ffffff; /* White background */
-      color: #000000;            /* Black text */
-      padding: 1rem;
+    :root {
+      --main-color: #000;         /* Black text */
+      --bg-color: #fff;           /* White background */
+      --accent-color: #777;       /* Gray for subtext */
+      --font-family: 'Lato', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
     }
 
-    /* Only show the active step */
-    .step {
-      display: none;
+    body, html {
+      font-family: var(--font-family);
+      height: 100%;
+      background-color: var(--bg-color);
     }
 
-    .step.active {
+    /* ✅ Main container fills the screen with a background image per frame */
+    .quiz-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ✅ White card with questions and inputs */
+    .form-box {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+    }
+
+    .options label {
       display: block;
+      margin-bottom: 0.5rem;
     }
 
-    /* Styled buttons */
+    /* ✅ Button style */
     button {
       margin-top: 1rem;
       padding: 0.75rem 1.5rem;
-      background-color: #555555;   /* Gray button */
-      color: #ffffff;              /* White text */
+      background-color: var(--main-color);
+      color: #fff;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #000000;   /* On hover: black */
+    button:disabled {
+      background-color: var(--accent-color);
+      cursor: not-allowed;
     }
 
-    /* Form inputs */
-    input[type="text"],
-    input[type="file"] {
-      padding: 0.5rem;
-      width: 100%;
-      margin-top: 0.5rem;
-      border: 1px solid #cccccc;
-      border-radius: 4px;
-    }
-
-    .options label {
-      display: block;
-      margin: 0.5rem 0;
-    }
-
-    h2 {
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      color: #333333; /* Slightly softer black for paragraphs */
+    /* ✅ Mobile: same layout but tighter spacing */
+    @media (max-width: 767px) {
+      .form-box {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ✅ Full multi-step form -->
-  <form id="surveyForm">
-    <!-- Frames 1–9 go here (for brevity, if you want I’ll paste the full version again) -->
-    <!-- For now, Frame 1 (intro) + Frame 9 (selfie) + submission included -->
-
-    <!-- Frame 1 -->
-    <div class="step active">
-      <h2>Ready to find your perfect skincare routine?</h2>
-      <p>No7 Personalised Skin Analysis helps you find the right products in less than 2 minutes.</p>
-      <p>By tapping "Start Skin Analysis" you agree to the Privacy Policy and Terms of Use.</p>
-      <button type="button" onclick="nextStep()">Start Skin Analysis</button>
-    </div>
-
-  <!-- Frame 2: Skin Type -->
-    <div class="step">
-      <h2>What is your skin type?</h2>
-      <p>Understanding your skin type helps us recommend the best products.</p>
-      <div class="options">
-        <label><input type="radio" name="skin_type" value="Normal"> Normal</label>
-        <label><input type="radio" name="skin_type" value="Dry"> Dry</label>
-        <label><input type="radio" name="skin_type" value="Oily"> Oily</label>
-        <label><input type="radio" name="skin_type" value="Combination"> Combination</label>
-        <label><input type="radio" name="skin_type" value="Not Sure"> Not Sure</label>
+<!-- ✅ Quiz container with dynamic background -->
+<div id="quiz" class="quiz-container">
+  <div class="form-box">
+    <form id="surveyForm">
+      <!-- ✅ Step content is dynamically replaced -->
+      <div id="stepContent">
+        <h2>Loading...</h2>
       </div>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
-
-    <!-- Frame 3: Sensitive Skin -->
-    <div class="step">
-      <h2>Do you have sensitive skin?</h2>
-      <div class="options">
-        <label><input type="radio" name="sensitive_skin" value="Yes"> Yes</label>
-        <label><input type="radio" name="sensitive_skin" value="No"> No</label>
+      <!-- ✅ Navigation buttons -->
+      <div style="display: flex; justify-content: space-between;">
+        <button type="button" onclick="prevStep()">Back</button>
+        <button type="button" onclick="nextStep()">Next</button>
       </div>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
+    </form>
+  </div>
+</div>
 
-    <!-- Frame 4: Skin Concerns (multiple choice) -->
-    <div class="step">
-      <h2>Do you have any personal skin concerns?</h2>
-      <div class="options">
-        <label><input type="checkbox" name="skin_concerns" value="Fine Lines & Wrinkles"> Fine Lines & Wrinkles</label>
-        <label><input type="checkbox" name="skin_concerns" value="Under Eye Puffiness"> Under Eye Puffiness</label>
-        <label><input type="checkbox" name="skin_concerns" value="Redness"> Redness</label>
-        <label><input type="checkbox" name="skin_concerns" value="Dull/Tired Skin"> Dull/Tired Skin</label>
-        <label><input type="checkbox" name="skin_concerns" value="Dryness"> Dryness</label>
-        <label><input type="checkbox" name="skin_concerns" value="Dark Circles"> Dark Circles</label>
-        <label><input type="checkbox" name="skin_concerns" value="Visible Pores"> Visible Pores</label>
-        <label><input type="checkbox" name="skin_concerns" value="Lack of Firmness"> Lack of Firmness (Face/Neck)</label>
-        <label><input type="checkbox" name="skin_concerns" value="Hyperpigmentation"> Hyperpigmentation</label>
-        <label><input type="checkbox" name="skin_concerns" value="Spots & Blemishes"> Spots & Blemishes</label>
-        <label><input type="checkbox" name="skin_concerns" value="Oiliness"> Oiliness</label>
-        <label><input type="checkbox" name="skin_concerns" value="Dark Spots"> Dark Spots / Age Spots</label>
-      </div>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
+<script>
+  // ✅ Each step is an object with the question, input type, and background
+  const steps = [
+    {
+      question: "Ready to find your perfect skincare routine?",
+      description: "No7 Personalised Skin Analysis helps you find the right products in less than 2 minutes.",
+      bg: "Sin título-1.png"
+    },
+    {
+      question: "What is your skin type?",
+      options: ["Normal", "Dry", "Oily", "Combination", "Not Sure"],
+      type: "radio",
+      name: "skin_type",
+      bg: "Sin título-2.png"
+    },
+    {
+      question: "Do you have sensitive skin?",
+      description: "Sensitive skin often feels tight and can become itchy, irritated and visibly red.",
+      options: ["Yes", "No"],
+      type: "radio",
+      name: "sensitive_skin",
+      bg: "Sin título-3.png"
+    },
+    {
+      question: "Do you have any personal skin concerns you would like to improve?",
+      type: "checkbox",
+      options: ["Fine Lines & Wrinkles", "Under Eye Puffiness", "Redness", "Dull/Tired Skin", "Dryness", "Dark Circles", "Visible Pores", "Lack of Firmness (Face/Neck)", "Hyperpigmentation", "Spots & Blemishes", "Oiliness", "Dark Spots / Age Spots"],
+      name: "skin_concerns",
+      bg: "Sin título-4.png"
+    },
+    {
+      question: "Do you think any of these factors could be affecting your skin?",
+      type: "checkbox",
+      options: ["Sun Exposure", "Pollution / Air Quality", "Variation in Temperature", "Poor Sleep", "Everyday Stress", "Menopause Transition", "Pregnancy / Breast Feeding", "None of these"],
+      name: "environmental_factors",
+      bg: "Sin título-5.png"
+    },
+    {
+      question: "Do you identify as a",
+      options: ["Female", "Male", "Non-binary", "Other", "Prefer not to say"],
+      type: "radio",
+      name: "gender",
+      bg: "Sin título-6.png"
+    },
+    {
+      question: "How old are you?",
+      options: ["Less than 30", "30-44", "45-60", "More than 60"],
+      type: "radio",
+      name: "age",
+      bg: "Sin título-7.png"
+    },
+    {
+      question: "Please upload or take a photo",
+      type: "file",
+      name: "selfie",
+      bg: null  // ✅ Frame 9 = No background
+    }
+  ];
 
-    <!-- Frame 5: Environmental Factors -->
-    <div class="step">
-      <h2>Do any of these factors affect your skin?</h2>
-      <div class="options">
-        <label><input type="checkbox" name="environmental_factors" value="Sun Exposure"> Sun Exposure</label>
-        <label><input type="checkbox" name="environmental_factors" value="Pollution"> Pollution / Air Quality</label>
-        <label><input type="checkbox" name="environmental_factors" value="Temperature"> Variation in Temperature</label>
-        <label><input type="checkbox" name="environmental_factors" value="Poor Sleep"> Poor Sleep</label>
-        <label><input type="checkbox" name="environmental_factors" value="Stress"> Everyday Stress</label>
-        <label><input type="checkbox" name="environmental_factors" value="Menopause"> Menopause Transition</label>
-        <label><input type="checkbox" name="environmental_factors" value="Pregnancy"> Pregnancy / Breastfeeding</label>
-        <label><input type="checkbox" name="environmental_factors" value="None"> None of these</label>
-      </div>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
+  let currentStep = 0;
 
-    <!-- Frame 6: Gender -->
-    <div class="step">
-      <h2>Do you identify as a:</h2>
-      <div class="options">
-        <label><input type="radio" name="gender_identity" value="Female"> Female</label>
-        <label><input type="radio" name="gender_identity" value="Male"> Male</label>
-        <label><input type="radio" name="gender_identity" value="Non-binary"> Non-binary</label>
-        <label><input type="radio" name="gender_identity" value="Other"> Other</label>
-        <label><input type="radio" name="gender_identity" value="Prefer not to say"> Prefer not to say</label>
-      </div>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
+  // ✅ Renders the step based on currentStep index
+  function renderStep() {
+    const step = steps[currentStep];
+    const container = document.getElementById("stepContent");
+    const quizBox = document.getElementById("quiz");
 
-    <!-- Frame 7: Age -->
-    <div class="step">
-      <h2>How old are you?</h2>
-      <div class="options">
-        <label><input type="radio" name="age_group" value="Under 30"> Under 30</label>
-        <label><input type="radio" name="age_group" value="30-44"> 30–44</label>
-        <label><input type="radio" name="age_group" value="45-60"> 45–60</label>
-        <label><input type="radio" name="age_group" value="Over 60"> Over 60</label>
-      </div>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
+    // ✅ Set background image or blank
+    quizBox.style.backgroundImage = step.bg ? `url('${step.bg}')` : "none";
 
-    <!-- Frame 8: Location -->
-    <div class="step">
-      <h2>Where do you live?</h2>
-      <input type="text" name="location" placeholder="City or Region" required>
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="button" onclick="nextStep()">Next</button>
-    </div>
+    let html = `<h2>${step.question}</h2>`;
+    if (step.description) html += `<p>${step.description}</p>`;
 
-    <!-- Frame 9: Selfie Upload -->
-    <div class="step">
-      <h2>We’d like to analyze your skin with a photo.</h2>
-      <p>Take a selfie or upload a photo. This won't be saved yet — only marked as 'uploaded'.</p>
-      <input type="file" id="selfieInput" accept="image/*" capture="user">
-      <button type="button" onclick="prevStep()">Back</button>
-      <button type="submit">Finish</button>
-    </div>
-  </form>
-
-  <!-- ✅ JavaScript to handle steps + form submission -->
-  <script>
-    const steps = document.querySelectorAll(".step");
-    let currentStep = 0;
-
-    function showStep(index) {
-      steps.forEach((step, i) => {
-        step.classList.toggle("active", i === index);
+    // ✅ Radio or Checkbox input
+    if (step.type === "radio" || step.type === "checkbox") {
+      html += '<div class="options">';
+      step.options.forEach(opt => {
+        html += `<label><input type="${step.type}" name="${step.name}" value="${opt}" required> ${opt}</label>`;
       });
+      html += '</div>';
+    }
+    // ✅ File upload input
+    else if (step.type === "file") {
+      html += `<input type="file" name="${step.name}" accept="image/*" required />`;
     }
 
-    function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-      }
+    container.innerHTML = html;
+  }
+
+  // ✅ Goes to next step or submits the form
+  function nextStep() {
+    const form = document.getElementById("surveyForm");
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
     }
 
-    function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-      }
+    if (currentStep < steps.length - 1) {
+      currentStep++;
+      renderStep();
+    } else {
+      submitForm();
     }
+  }
 
-    document.getElementById("surveyForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+  // ✅ Go back a step
+  function prevStep() {
+    if (currentStep > 0) {
+      currentStep--;
+      renderStep();
+    }
+  }
 
-      const formData = new FormData(this);
-      const json = {};
+  // ✅ Submit the form to Google Sheets
+  function submitForm() {
+    const form = document.getElementById("surveyForm");
+    const formData = new FormData(form);
+    const data = {};
 
-      // Collect all form data
-      for (let [key, value] of formData.entries()) {
-        if (json[key]) {
-          // Handle multiple selections
-          if (Array.isArray(json[key])) {
-            json[key].push(value);
-          } else {
-            json[key] = [json[key], value];
-          }
+    steps.forEach(step => {
+      if (step.name) {
+        if (step.type === "checkbox") {
+          data[step.name] = [];
+          form.querySelectorAll(`input[name="${step.name}"]:checked`).forEach(el => {
+            data[step.name].push(el.value);
+          });
+        } else if (step.type === "file") {
+          const file = form.querySelector(`input[name="${step.name}"]`).files[0];
+          data[step.name] = file ? "uploaded" : "";
         } else {
-          json[key] = value;
+          const selected = form.querySelector(`input[name="${step.name}"]:checked`);
+          data[step.name] = selected ? selected.value : "";
         }
       }
-
-      // ✅ Handle Frame 9: store "uploaded" if a file was selected
-      const selfieFile = document.getElementById('selfieInput').files[0];
-      json.selfie = selfieFile ? 'uploaded' : '';
-
-      // ✅ Submit to your Google Sheets Web App
-      fetch("YOUR_GOOGLE_SCRIPT_URL", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(json),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }).then(() => {
-        alert("✅ Thank you! Your responses have been saved.");
-        this.reset();
-        currentStep = 0;
-        showStep(currentStep);
-      }).catch(error => {
-        alert("❌ Submission failed. Try again.");
-        console.error("Error:", error);
-      });
     });
-  </script>
+
+    // ✅ Send to your Google Script Web App (replace URL)
+    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    alert("✅ Thank you! Your answers have been submitted.");
+    form.reset();
+    currentStep = 0;
+    renderStep();
+  }
+
+  // ✅ Start with first question
+  renderStep();
+</script>
+
 </body>
 </html>
 
