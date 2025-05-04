@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Skin Care Quiz</title>
 
-  <!-- ✅ Load Lato font from Google Fonts -->
+  <!-- ✅ Load Lato font -->
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --main-color: #000;         /* Black text */
-      --bg-color: #fff;           /* White background */
-      --accent-color: #777;       /* Gray for subtext */
+      --main-color: #000;
+      --bg-color: #fff;
+      --accent-color: #777;
       --font-family: 'Lato', sans-serif;
     }
 
@@ -28,7 +28,7 @@
       background-color: var(--bg-color);
     }
 
-    /* ✅ Main container fills the screen with a background image per frame */
+    /* ✅ Main fullscreen layout */
     .quiz-container {
       position: relative;
       width: 100%;
@@ -41,9 +41,8 @@
       align-items: center;
     }
 
-    /* ✅ White card with questions and inputs */
     .form-box {
-      background-color: rgba(255, 255, 255, 0.95);
+      background-color: rgba(255, 255, 255, 0.95); /* white content box */
       padding: 2rem;
       border-radius: 8px;
       max-width: 600px;
@@ -65,7 +64,6 @@
       margin-bottom: 0.5rem;
     }
 
-    /* ✅ Button style */
     button {
       margin-top: 1rem;
       padding: 0.75rem 1.5rem;
@@ -81,10 +79,8 @@
       cursor: not-allowed;
     }
 
-    /* ✅ Mobile: same layout but tighter spacing */
     @media (max-width: 767px) {
       .form-box {
-        background-color: rgba(255, 255, 255, 0.95);
         padding: 1.5rem;
       }
     }
@@ -93,15 +89,13 @@
 
 <body>
 
-<!-- ✅ Quiz container with dynamic background -->
+<!-- ✅ The quiz container where backgrounds will change per step -->
 <div id="quiz" class="quiz-container">
   <div class="form-box">
     <form id="surveyForm">
-      <!-- ✅ Step content is dynamically replaced -->
       <div id="stepContent">
         <h2>Loading...</h2>
       </div>
-      <!-- ✅ Navigation buttons -->
       <div style="display: flex; justify-content: space-between;">
         <button type="button" onclick="prevStep()">Back</button>
         <button type="button" onclick="nextStep()">Next</button>
@@ -111,19 +105,22 @@
 </div>
 
 <script>
-  // ✅ Each step is an object with the question, input type, and background
+  // ✅ Device check
+  const isMobile = window.innerWidth <= 767;
+
+  // ✅ Quiz steps with responsive background image for each frame
   const steps = [
     {
       question: "Ready to find your perfect skincare routine?",
       description: "No7 Personalised Skin Analysis helps you find the right products in less than 2 minutes.",
-      bg: "Sin título-1.png"
+      bg: isMobile ? "mobile-1.jpg" : "desktop-1.jpg"
     },
     {
       question: "What is your skin type?",
       options: ["Normal", "Dry", "Oily", "Combination", "Not Sure"],
       type: "radio",
       name: "skin_type",
-      bg: "Sin título-2.png"
+      bg: isMobile ? "mobile-2.jpg" : "desktop-2.jpg"
     },
     {
       question: "Do you have sensitive skin?",
@@ -131,75 +128,71 @@
       options: ["Yes", "No"],
       type: "radio",
       name: "sensitive_skin",
-      bg: "Sin título-3.png"
+      bg: isMobile ? "mobile-3.jpg" : "desktop-3.jpg"
     },
     {
       question: "Do you have any personal skin concerns you would like to improve?",
       type: "checkbox",
       options: ["Fine Lines & Wrinkles", "Under Eye Puffiness", "Redness", "Dull/Tired Skin", "Dryness", "Dark Circles", "Visible Pores", "Lack of Firmness (Face/Neck)", "Hyperpigmentation", "Spots & Blemishes", "Oiliness", "Dark Spots / Age Spots"],
       name: "skin_concerns",
-      bg: "Sin título-4.png"
+      bg: isMobile ? "mobile-4.jpg" : "desktop-4.jpg"
     },
     {
       question: "Do you think any of these factors could be affecting your skin?",
       type: "checkbox",
       options: ["Sun Exposure", "Pollution / Air Quality", "Variation in Temperature", "Poor Sleep", "Everyday Stress", "Menopause Transition", "Pregnancy / Breast Feeding", "None of these"],
       name: "environmental_factors",
-      bg: "Sin título-5.png"
+      bg: isMobile ? "mobile-5.jpg" : "desktop-5.jpg"
     },
     {
       question: "Do you identify as a",
       options: ["Female", "Male", "Non-binary", "Other", "Prefer not to say"],
       type: "radio",
       name: "gender",
-      bg: "Sin título-6.png"
+      bg: isMobile ? "mobile-6.jpg" : "desktop-6.jpg"
     },
     {
       question: "How old are you?",
       options: ["Less than 30", "30-44", "45-60", "More than 60"],
       type: "radio",
       name: "age",
-      bg: "Sin título-7.png"
+      bg: isMobile ? "mobile-7.jpg" : "desktop-7.jpg"
     },
     {
       question: "Please upload or take a photo",
       type: "file",
       name: "selfie",
-      bg: null  // ✅ Frame 9 = No background
+      bg: null // ✅ No background for frame 9
     }
   ];
 
   let currentStep = 0;
 
-  // ✅ Renders the step based on currentStep index
   function renderStep() {
     const step = steps[currentStep];
     const container = document.getElementById("stepContent");
     const quizBox = document.getElementById("quiz");
 
-    // ✅ Set background image or blank
+    // ✅ Set background image dynamically
     quizBox.style.backgroundImage = step.bg ? `url('${step.bg}')` : "none";
 
+    // ✅ Render question and inputs
     let html = `<h2>${step.question}</h2>`;
     if (step.description) html += `<p>${step.description}</p>`;
 
-    // ✅ Radio or Checkbox input
     if (step.type === "radio" || step.type === "checkbox") {
       html += '<div class="options">';
       step.options.forEach(opt => {
         html += `<label><input type="${step.type}" name="${step.name}" value="${opt}" required> ${opt}</label>`;
       });
       html += '</div>';
-    }
-    // ✅ File upload input
-    else if (step.type === "file") {
+    } else if (step.type === "file") {
       html += `<input type="file" name="${step.name}" accept="image/*" required />`;
     }
 
     container.innerHTML = html;
   }
 
-  // ✅ Goes to next step or submits the form
   function nextStep() {
     const form = document.getElementById("surveyForm");
     if (!form.checkValidity()) {
@@ -215,7 +208,6 @@
     }
   }
 
-  // ✅ Go back a step
   function prevStep() {
     if (currentStep > 0) {
       currentStep--;
@@ -223,7 +215,6 @@
     }
   }
 
-  // ✅ Submit the form to Google Sheets
   function submitForm() {
     const form = document.getElementById("surveyForm");
     const formData = new FormData(form);
@@ -246,8 +237,8 @@
       }
     });
 
-    // ✅ Send to your Google Script Web App (replace URL)
-    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    // ✅ Replace with your own script URL
+    fetch("https://script.google.com/macros/s/AKfycbyVADMrbn9Aosc_jX2wl0I2AdqEAJujFdd4orvGdRC8qAOCW1-p3UAIyCteiakClyfS/exec", {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
@@ -260,11 +251,9 @@
     renderStep();
   }
 
-  // ✅ Start with first question
   renderStep();
 </script>
 
 </body>
 </html>
-
 
