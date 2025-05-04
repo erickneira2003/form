@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Sets the character encoding so all symbols and languages display correctly -->
+  <!-- Ensures correct text encoding -->
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- Ensures the page scales properly on mobile devices -->
+  <!-- Makes layout responsive on mobile -->
 
   <title>Skincare Survey</title>
-  <!-- Title shown in the browser tab -->
+  <!-- Page title shown in browser tab -->
 
   <style>
-    /* Basic styling */
+    /* Page styling */
     body {
       font-family: sans-serif;
       padding: 1rem;
     }
 
-    /* Hide all steps by default */
+    /* Each step is hidden by default */
     .step {
       display: none;
     }
 
-    /* Only show the active step */
+    /* Only show the currently active step */
     .step.active {
       display: block;
     }
@@ -35,67 +35,59 @@
 </head>
 
 <body>
-  <!-- This is the form that contains all the survey steps -->
+
+  <!-- Main multi-step survey form -->
   <form id="surveyForm">
-
-    <!-- STEP 1: Skin Concern -->
+    
+    <!-- STEP 1 -->
     <div class="step active">
-      <!-- 'active' makes this step visible when the page loads -->
       <h2>What is your main skin concern?</h2>
-
-      <!-- Each radio button is part of the 'q1' group -->
+      <!-- Radio options for q1 -->
       <label><input type="radio" name="q1" value="Acne"> Acne</label><br>
       <label><input type="radio" name="q1" value="Wrinkles"> Wrinkles</label><br>
       <label><input type="radio" name="q1" value="Dryness"> Dryness</label><br>
-
-      <!-- Button to go to the next step -->
+      <!-- Navigation -->
       <button type="button" onclick="nextStep()">Next</button>
     </div>
 
-    <!-- STEP 2: Sunscreen Habit -->
+    <!-- STEP 2 -->
     <div class="step">
       <h2>How often do you use sunscreen?</h2>
-
-      <!-- Radio button group named 'q2' -->
+      <!-- Radio options for q2 -->
       <label><input type="radio" name="q2" value="Daily"> Daily</label><br>
       <label><input type="radio" name="q2" value="Sometimes"> Sometimes</label><br>
       <label><input type="radio" name="q2" value="Never"> Never</label><br>
-
-      <!-- Back and Next buttons -->
+      <!-- Navigation -->
       <button type="button" onclick="prevStep()">Back</button>
       <button type="button" onclick="nextStep()">Next</button>
     </div>
 
-    <!-- STEP 3: Location -->
+    <!-- STEP 3 -->
     <div class="step">
       <h2>Where do you live?</h2>
-
-      <!-- Text input for location with 'q3' as its name -->
+      <!-- Text input for city -->
       <input type="text" name="q3" placeholder="City or Region" required><br>
-
-      <!-- Navigation buttons -->
+      <!-- Navigation -->
       <button type="button" onclick="prevStep()">Back</button>
       <button type="submit">Submit</button>
-      <!-- Submits the form to be processed by JavaScript -->
     </div>
   </form>
 
-  <!-- Script for form logic (step navigation + submission) -->
   <script>
-    // Get all step divs
+    // Select all step containers
     const steps = document.querySelectorAll(".step");
 
-    // Start on the first step (index 0)
+    // Track the currently visible step (starts at 0)
     let currentStep = 0;
 
-    // Show only the current step by adding/removing the 'active' class
+    // Show only the selected step
     function showStep(index) {
       steps.forEach((step, i) => {
         step.classList.toggle("active", i === index);
       });
     }
 
-    // Go to the next step if available
+    // Go forward
     function nextStep() {
       if (currentStep < steps.length - 1) {
         currentStep++;
@@ -103,7 +95,7 @@
       }
     }
 
-    // Go to the previous step
+    // Go back
     function prevStep() {
       if (currentStep > 0) {
         currentStep--;
@@ -111,14 +103,35 @@
       }
     }
 
-    // Handle form submission
+    // Form submission handler
     document.getElementById("surveyForm").addEventListener("submit", function(e) {
-      e.preventDefault(); // Prevent normal form submission (page reload)
+      e.preventDefault(); // Prevents page reload
 
-      // For now, just show an alert; we’ll connect to Google Sheets later
-      alert("✅ Form would be submitted to Google Sheet here!");
+      // Gather the form data
+      const formData = new FormData(this);
+      const jsonData = Object.fromEntries(formData.entries());
 
-      // Here you'll later call a script to send data to Google Sheets
+      // Send data to Google Apps Script Web App
+      fetch("https://script.google.com/macros/s/AKfycbyVADMrbn9Aosc_jX2wl0I2AdqEAJujFdd4orvGdRC8qAOCW1-p3UAIyCteiakClyfS/exec", {
+        method: "POST",
+        body: JSON.stringify(jsonData),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(response => {
+        // Show success message and reset the form
+        alert("✅ Thank you! Your response was saved.");
+        this.reset();
+        currentStep = 0;
+        showStep(currentStep);
+      })
+      .catch(error => {
+        // Show error message if something fails
+        alert("❌ There was a problem. Please try again.");
+        console.error("Submission error:", error);
+      });
     });
   </script>
 </body>
