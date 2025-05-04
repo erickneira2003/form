@@ -1,259 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Skin Care Quiz</title>
-
-  <!-- ✅ Load Lato font -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Skin Analyzer Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --main-color: #000;
-      --bg-color: #fff;
-      --accent-color: #777;
-      --font-family: 'Lato', sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
+    body, html {
       margin: 0;
       padding: 0;
+      font-family: 'Lato', sans-serif;
+      color: black;
+      background-color: white;
     }
-
-    body, html {
-      font-family: var(--font-family);
-      height: 100%;
-      background-color: var(--bg-color);
-    }
-
-    /* ✅ Main fullscreen layout */
-    .quiz-container {
-      position: relative;
-      width: 100%;
+    .frame {
+      width: 100vw;
       height: 100vh;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-    }
-
-    .form-box {
-      background-color: rgba(255, 255, 255, 0.95); /* white content box */
+      background-size: cover;
+      background-position: center;
       padding: 2rem;
-      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    .question-box {
+      background: rgba(255,255,255,0.95);
+      padding: 2rem;
+      border-radius: 1rem;
       max-width: 600px;
-      width: 90%;
+      width: 100%;
     }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      color: var(--accent-color);
-      margin-bottom: 1rem;
-    }
-
-    .options label {
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    button {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background-color: var(--main-color);
-      color: #fff;
+    button, input[type="submit"] {
+      background: black;
+      color: white;
       border: none;
-      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .results img {
+      max-width: 100%;
+      margin: 10px 0;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    .options label {
+      background: #eee;
+      padding: 0.75rem;
+      border-radius: 5px;
       cursor: pointer;
     }
-
-    button:disabled {
-      background-color: var(--accent-color);
-      cursor: not-allowed;
-    }
-
-    @media (max-width: 767px) {
-      .form-box {
-        padding: 1.5rem;
-      }
+    input[type="radio"], input[type="checkbox"] {
+      margin-right: 10px;
     }
   </style>
 </head>
-
 <body>
+  <div id="quiz"></div>
 
-<!-- ✅ The quiz container where backgrounds will change per step -->
-<div id="quiz" class="quiz-container">
-  <div class="form-box">
-    <form id="surveyForm">
-      <div id="stepContent">
-        <h2>Loading...</h2>
-      </div>
-      <div style="display: flex; justify-content: space-between;">
-        <button type="button" onclick="prevStep()">Back</button>
-        <button type="button" onclick="nextStep()">Next</button>
-      </div>
-    </form>
-  </div>
-</div>
+  <script>
+    let currentFrame = 0;
+    const formData = {};
+    let uploadedFile = null;
 
-<script>
-  // ✅ Device check
-  const isMobile = window.innerWidth <= 767;
+    const isMobile = () => window.innerWidth <= 768;
 
-  // ✅ Quiz steps with responsive background image for each frame
-  const steps = [
-    {
-      question: "Ready to find your perfect skincare routine?",
-      description: "No7 Personalised Skin Analysis helps you find the right products in less than 2 minutes.",
-      bg: isMobile ? "mobile-1.jpg" : "desktop-1.jpg"
-    },
-    {
-      question: "What is your skin type?",
-      options: ["Normal", "Dry", "Oily", "Combination", "Not Sure"],
-      type: "radio",
-      name: "skin_type",
-      bg: isMobile ? "mobile-2.jpg" : "desktop-2.jpg"
-    },
-    {
-      question: "Do you have sensitive skin?",
-      description: "Sensitive skin often feels tight and can become itchy, irritated and visibly red.",
-      options: ["Yes", "No"],
-      type: "radio",
-      name: "sensitive_skin",
-      bg: isMobile ? "mobile-3.jpg" : "desktop-3.jpg"
-    },
-    {
-      question: "Do you have any personal skin concerns you would like to improve?",
-      type: "checkbox",
-      options: ["Fine Lines & Wrinkles", "Under Eye Puffiness", "Redness", "Dull/Tired Skin", "Dryness", "Dark Circles", "Visible Pores", "Lack of Firmness (Face/Neck)", "Hyperpigmentation", "Spots & Blemishes", "Oiliness", "Dark Spots / Age Spots"],
-      name: "skin_concerns",
-      bg: isMobile ? "mobile-4.jpg" : "desktop-4.jpg"
-    },
-    {
-      question: "Do you think any of these factors could be affecting your skin?",
-      type: "checkbox",
-      options: ["Sun Exposure", "Pollution / Air Quality", "Variation in Temperature", "Poor Sleep", "Everyday Stress", "Menopause Transition", "Pregnancy / Breast Feeding", "None of these"],
-      name: "environmental_factors",
-      bg: isMobile ? "mobile-5.jpg" : "desktop-5.jpg"
-    },
-    {
-      question: "Do you identify as a",
-      options: ["Female", "Male", "Non-binary", "Other", "Prefer not to say"],
-      type: "radio",
-      name: "gender",
-      bg: isMobile ? "mobile-6.jpg" : "desktop-6.jpg"
-    },
-    {
-      question: "How old are you?",
-      options: ["Less than 30", "30-44", "45-60", "More than 60"],
-      type: "radio",
-      name: "age",
-      bg: isMobile ? "mobile-7.jpg" : "desktop-7.jpg"
-    },
-    {
-      question: "Please upload or take a photo",
-      type: "file",
-      name: "selfie",
-      bg: null // ✅ No background for frame 9
-    }
-  ];
-
-  let currentStep = 0;
-
-  function renderStep() {
-    const step = steps[currentStep];
-    const container = document.getElementById("stepContent");
-    const quizBox = document.getElementById("quiz");
-
-    // ✅ Set background image dynamically
-    quizBox.style.backgroundImage = step.bg ? `url('${step.bg}')` : "none";
-
-    // ✅ Render question and inputs
-    let html = `<h2>${step.question}</h2>`;
-    if (step.description) html += `<p>${step.description}</p>`;
-
-    if (step.type === "radio" || step.type === "checkbox") {
-      html += '<div class="options">';
-      step.options.forEach(opt => {
-        html += `<label><input type="${step.type}" name="${step.name}" value="${opt}" required> ${opt}</label>`;
-      });
-      html += '</div>';
-    } else if (step.type === "file") {
-      html += `<input type="file" name="${step.name}" accept="image/*" required />`;
-    }
-
-    container.innerHTML = html;
-  }
-
-  function nextStep() {
-    const form = document.getElementById("surveyForm");
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-
-    if (currentStep < steps.length - 1) {
-      currentStep++;
-      renderStep();
-    } else {
-      submitForm();
-    }
-  }
-
-  function prevStep() {
-    if (currentStep > 0) {
-      currentStep--;
-      renderStep();
-    }
-  }
-
-  function submitForm() {
-    const form = document.getElementById("surveyForm");
-    const formData = new FormData(form);
-    const data = {};
-
-    steps.forEach(step => {
-      if (step.name) {
-        if (step.type === "checkbox") {
-          data[step.name] = [];
-          form.querySelectorAll(`input[name="${step.name}"]:checked`).forEach(el => {
-            data[step.name].push(el.value);
-          });
-        } else if (step.type === "file") {
-          const file = form.querySelector(`input[name="${step.name}"]`).files[0];
-          data[step.name] = file ? "uploaded" : "";
-        } else {
-          const selected = form.querySelector(`input[name="${step.name}"]:checked`);
-          data[step.name] = selected ? selected.value : "";
-        }
+    const frames = [
+      {
+        id: 'frame1',
+        bg: isMobile() ? 'mobile-1.jpg' : 'desktop-1.jpg',
+        html: `
+          <div class="question-box">
+            <h2>Ready to find your perfect skincare routine?</h2>
+            <p>No7 Personalised Skin Analysis helps you find the right products for your skin in less than 2 minutes.</p>
+            <p>By tapping 'Start Skin Analysis' you agree to the Privacy Policy and Terms of use</p>
+            <button onclick="nextFrame()">Start Skin Analysis</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame2',
+        bg: isMobile() ? 'mobile-2.jpg' : 'desktop-2.jpg',
+        html: `
+          <div class="question-box">
+            <h2>What is your skin type?</h2>
+            <p>Understanding your skin type helps us recommend the best products for your skin.</p>
+            <div class="options">
+              ${["Normal","Dry","Oily","Combination","Not Sure"].map(type => `
+                <label><input type="radio" name="q2" value="${type}"> ${type}</label>`).join('')}
+            </div>
+            <button onclick="saveAnswer('q2')">Next</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame3',
+        bg: isMobile() ? 'mobile-3.jpg' : 'desktop-3.jpg',
+        html: `
+          <div class="question-box">
+            <h2>Do you have sensitive skin?</h2>
+            <p>Sensitive skin often feels tight and can become itchy, irritated and visibly red. It has a tendency to react to changes in the weather or certain products or ingredients.</p>
+            <div class="options">
+              <label><input type="radio" name="q3" value="Yes"> Yes</label>
+              <label><input type="radio" name="q3" value="No"> No</label>
+            </div>
+            <button onclick="saveAnswer('q3')">Next</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame4',
+        bg: isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
+        html: `
+          <div class="question-box">
+            <h2>Do you have any personal skin concerns you would like to improve?</h2>
+            <p>Select all that apply.</p>
+            <div class="options">
+              ${["Fine Lines & Wrinkles","Under Eye Puffiness","Redness","Dull/Tired Skin","Dryness","Dark Circles","Visible Pores","Lack of Firmness (Face/Neck)","Hyperpigmentation","Spots & Blemishes","Oiliness","Dark Spots / Age Spots"].map(val => `
+                <label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
+            </div>
+            <button onclick="saveMultiAnswer('q4')">Next</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame5',
+        bg: isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
+        html: `
+          <div class="question-box">
+            <h2>Do you think any of these factors could be affecting your skin?</h2>
+            <p>Select all that apply.</p>
+            <div class="options">
+              ${["Sun Exposure","Pollution / Air Quality","Variation in Temperature","Poor Sleep","Everyday Stress","Menopause Transition","Pregnancy / Breast Feeding","None of these"].map(val => `
+                <label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
+            </div>
+            <button onclick="saveMultiAnswer('q5')">Next</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame6',
+        bg: isMobile() ? 'mobile-6.jpg' : 'desktop-6.jpg',
+        html: `
+          <div class="question-box">
+            <h2>Do you identify as a:</h2>
+            <div class="options">
+              ${["Female","Male","Non-binary","Other","Prefer not to say"].map(g => `
+                <label><input type="radio" name="q6" value="${g}"> ${g}</label>`).join('')}
+            </div>
+            <button onclick="saveAnswer('q6')">Next</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame7',
+        bg: isMobile() ? 'mobile-7.jpg' : 'desktop-7.jpg',
+        html: `
+          <div class="question-box">
+            <h2>How old are you?</h2>
+            <p>Knowing your age helps us understand your skin better.</p>
+            <div class="options">
+              ${["<30","30-44","45-60",">60"].map(val => `
+                <label><input type="radio" name="q7" value="${val}"> ${val}</label>`).join('')}
+            </div>
+            <button onclick="saveAnswer('q7')">Next</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame9',
+        bg: isMobile() ? 'mobile-9.jpg' : 'desktop-9.jpg',
+        html: `
+          <div class="question-box">
+            <h2>Please upload or take a photo</h2>
+            <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
+            <button onclick="document.getElementById('attachPhoto').click()">📂 Attach Your Photo</button>
+            <input type="file" id="takePhoto" accept="image/*" capture="environment" onchange="handleImage(event)">
+            <input type="file" id="attachPhoto" accept="image/*" onchange="handleImage(event)">
+            <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
+            <button onclick="submitImage()">Analyze</button>
+          </div>
+        `
+      },
+      {
+        id: 'frame10',
+        bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
+        html: `
+          <div class="question-box">
+            <h2>AI Results</h2>
+            <div id="resultBox">Waiting for analysis...</div>
+          </div>
+        `
       }
-    });
+    ];
 
-    // ✅ Replace with your own script URL
-    fetch("https://script.google.com/macros/s/AKfycbyVADMrbn9Aosc_jX2wl0I2AdqEAJujFdd4orvGdRC8qAOCW1-p3UAIyCteiakClyfS/exec", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    function renderFrame() {
+      const quiz = document.getElementById('quiz');
+      const frame = frames[currentFrame];
+      const bg = frame.bg.startsWith('#') ? frame.bg : `url(${frame.bg})`;
+      quiz.innerHTML = `<div class="frame" style="background:${bg}">${frame.html}</div>`;
+    }
 
-    alert("✅ Thank you! Your answers have been submitted.");
-    form.reset();
-    currentStep = 0;
-    renderStep();
-  }
+    function nextFrame() {
+      currentFrame++;
+      renderFrame();
+    }
 
-  renderStep();
-</script>
+    function saveAnswer(key) {
+      const val = document.querySelector(`input[name='${key}']:checked`);
+      if (!val) return alert("Please select an option");
+      formData[key] = val.value;
+      nextFrame();
+    }
 
+    function saveMultiAnswer(key) {
+      const checkboxes = [...document.querySelectorAll(`input[name='${key}']:checked`)];
+      if (!checkboxes.length) return alert("Please select at least one");
+      formData[key] = checkboxes.map(c => c.value);
+      nextFrame();
+    }
+
+    function handleImage(e) {
+      uploadedFile = e.target.files[0];
+      if (!uploadedFile) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(uploadedFile);
+    }
+
+    async function submitImage() {
+      if (!uploadedFile) return alert("Please upload or take a photo first.");
+      const fd = new FormData();
+      fd.append('image', uploadedFile);
+      nextFrame();
+      const res = await fetch('/api/analyze', { method: 'POST', body: fd });
+      const data = await res.json();
+      const box = document.getElementById('resultBox');
+      if (data.result) {
+        const result = data.result;
+        let html = `<ul>`;
+        html += `<li><strong>Skin Age:</strong> ${result.skin_age?.value}</li>`;
+        html += `<li><strong>Acne Count:</strong> ${result.acne?.count}</li>`;
+        html += `<li><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</li>`;
+        html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
+        html += `</ul>`;
+        for (const [key, label] of Object.entries({
+          brown_area: "Brown Area Map",
+          red_area: "Red Area Map",
+          texture_enhanced_pores_map: "Pore Map",
+          texture_enhanced_blackheads_map: "Blackhead Map",
+          texture_enhanced_lines_map: "Wrinkle Map",
+          water_area_map: "Water Map",
+          rough_area_map: "Roughness Map",
+          roi_outline_map: "Region of Interest Map"
+        })) {
+          const img = result.face_maps?.[key] || result[key];
+          if (img) html += `<p><strong>${label}</strong></p><img src="data:image/jpeg;base64,${img}" />`;
+        }
+        box.innerHTML = html;
+      } else {
+        box.innerText = '❌ Error analyzing image';
+      }
+    }
+
+    renderFrame();
+  </script>
 </body>
 </html>
 
