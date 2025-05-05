@@ -114,7 +114,7 @@
     const frames = [
       {
         id: 'frame1',
-          bg: () => isMobile() ? 'mobile-1.jpg' : 'desktop-1.jpg',
+        bg: isMobile() ? 'mobile-1.jpg' : 'desktop-1.jpg',
         html: `<div class="question-box">
           <h2>Ready to find your perfect skincare routine?</h2>
           <p>No7 Personalised Skin Analysis helps you find the right products for your skin in less than 2 minutes.</p>
@@ -126,7 +126,7 @@
       // Frame 2: Single choice skin type
       {
         id: 'frame2',
-          bg: () => isMobile() ? 'mobile-2.jpg' : 'desktop-2.jpg',
+        bg: isMobile() ? 'mobile-2.jpg' : 'desktop-2.jpg',
         html: `<div class="question-box">
           <h2>What is your skin type?</h2>
           <p>Understanding your skin type helps us recommend the best products for your skin.</p>
@@ -141,7 +141,7 @@
       // Frame 3: Single choice sensitive skin
       {
         id: 'frame3',
-        bg: () => isMobile() ? 'mobile-3.jpg' : 'desktop-3.jpg',
+        bg: isMobile() ? 'mobile-3.jpg' : 'desktop-3.jpg',
         html: `<div class="question-box">
           <h2>Do you have sensitive skin?</h2>
           <p>Sensitive skin often feels tight and can become itchy, irritated and visibly red.</p>
@@ -156,7 +156,7 @@
       // Frame 4: Multiple skin concerns
      {
       id: 'frame4',
-        bg: () => isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
+      bg: isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
       html: `<div class="question-box">
         <h2>Do you have any personal skin concerns?</h2>
         <p>Select all that apply.</p>
@@ -174,7 +174,7 @@
       // Frame 5: Environmental/lifestyle factors
           {
             id: 'frame5',
-              bg: () => isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
+            bg: isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
             html: `<div class="question-box">
               <h2>Do you think any of these factors affect your skin?</h2>
               <div class="options">
@@ -190,7 +190,7 @@
       // Frame 6: Gender identity
       {
         id: 'frame6',
-        bg: () => isMobile() ? 'mobile-6.jpg' : 'desktop-6.jpg',
+        bg: isMobile() ? 'mobile-6.jpg' : 'desktop-6.jpg',
         html: `<div class="question-box">
           <h2>Do you identify as:</h2>
           <div class="options">
@@ -204,7 +204,7 @@
       // Frame 7: Age group
       {
         id: 'frame7',
-        bg: () => isMobile() ? 'mobile-7.jpg' : 'desktop-7.jpg',
+        bg: isMobile() ? 'mobile-7.jpg' : 'desktop-7.jpg',
         html: `<div class="question-box">
           <h2>How old are you?</h2>
           <div class="options">
@@ -218,7 +218,7 @@
       // Frame 9: Upload or take photo
       {
         id: 'frame9',
-        bg: () => isMobile() ? 'mobile-9.jpg' : 'desktop-9.jpg',
+        bg: isMobile() ? 'mobile-9.jpg' : 'desktop-9.jpg',
         html: `<div class="question-box">
           <h2>Please upload or take a photo</h2>
           <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
@@ -233,7 +233,7 @@
       // Frame 10: Results (to be filled after image is analyzed)
             {
             id: 'frame10',
-            bg: () => isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
+            bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
            html: `<div class="question-box">
                     <h2>AI Results</h2>
                     <div id="resultBox">Waiting for analysis...</div>
@@ -245,14 +245,12 @@
     ];
 
     // Render the current frame content
-   function renderFrame() {
-    const quiz = document.getElementById('quiz');
-    const frame = frames[currentFrame];
-    const bgValue = typeof frame.bg === 'function' ? frame.bg() : frame.bg;
-    const bg = bgValue.startsWith('#') ? bgValue : `url(${bgValue})`;
-    quiz.innerHTML = `<div class="frame" style="background:${bg}">${frame.html}</div>`;
+    function renderFrame() {
+      const quiz = document.getElementById('quiz');
+      const frame = frames[currentFrame];
+      const bg = frame.bg.startsWith('#') ? frame.bg : `url(${frame.bg})`;
+      quiz.innerHTML = `<div class="frame" style="background:${bg}">${frame.html}</div>`;
     }
-    
 
     // Advance to next frame
     function nextFrame() {
@@ -308,20 +306,21 @@
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
-                  let html = `
-                      <div style="text-align:center; margin: 0;">
-                        <div style="margin-bottom: 0;">
-                          <p style="margin: 0;"><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
-                          <p style="margin: 0;"><strong>Skin Type:</strong> ${["Oily skin", "Dry skin", "Neutral skin", "Combination skin"][result.skin_type?.skin_type]}</p>
-                          <p style="margin: 0;"><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
+                   let html = `
+                      <div style="text-align: center;">
+                    
+                        <div style="margin-bottom: 1rem;">
+                          <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
+                          <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
+                          <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
                         </div>
-                        <div style="margin-top: 4px;">
-                          <canvas id="radarChart" width="300" height="300" style="display: block;"></canvas>
-                        </div>
+                    
+                        <canvas id="radarChart" width="300" height="300" style="margin-top: 1rem;"></canvas>
+                    
                       </div>
                     `;
 
-                box.innerHTML = html;
+                // box.innerHTML = html;
                 
                 // 🟢 Initialize Chart.js radar chart after DOM is updated
                 const ctx = document.getElementById('radarChart').getContext('2d');
@@ -403,25 +402,8 @@
     // Load the first frame on page load
     renderFrame();
   </script>
-
-  <script>
-      const backgroundImages = [
-        'mobile-1.jpg', 'mobile-2.jpg', 'mobile-3.jpg', 'mobile-4.jpg',
-        'mobile-5.jpg', 'mobile-6.jpg', 'mobile-7.jpg', 'mobile-9.jpg', 'mobile-10.jpg',
-        'desktop-1.jpg', 'desktop-2.jpg', 'desktop-3.jpg', 'desktop-4.jpg',
-        'desktop-5.jpg', 'desktop-6.jpg', 'desktop-7.jpg', 'desktop-9.jpg', 'desktop-10.jpg'
-      ];
-    
-      backgroundImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
-    </script>
-
 </body>
 </html>
-
-
 
 
 
