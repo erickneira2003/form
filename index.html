@@ -2,10 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Makes the layout responsive to screen size -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>AI Skin Analyzer Quiz</title>
+
+  <!-- Loads the Lato font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+
   <style>
+    /* Basic page and font setup */
     body, html {
       margin: 0;
       padding: 0;
@@ -13,6 +19,8 @@
       color: black;
       background-color: white;
     }
+
+    /* Full-screen frame background container */
     .frame {
       width: 100vw;
       height: 100vh;
@@ -26,13 +34,17 @@
       box-sizing: border-box;
       text-align: center;
     }
+
+    /* Box that contains the question or content */
     .question-box {
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.9); /* semi-transparent white */
       padding: 2rem;
       border-radius: 1rem;
       max-width: 600px;
       width: 100%;
     }
+
+    /* Button styles */
     button, input[type="submit"] {
       background: black;
       color: white;
@@ -43,40 +55,59 @@
       font-size: 1rem;
       cursor: pointer;
     }
+
+    /* Hide file inputs visually */
     input[type="file"] {
       display: none;
     }
+
+    /* Image styling for preview or result */
     .results img {
       max-width: 100%;
       margin: 10px 0;
     }
+
+    /* Group of selectable options */
     .options {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-top: 1rem;
     }
+
+    /* Style for individual option */
     .options label {
       background: #eee;
       padding: 0.75rem;
       border-radius: 5px;
       cursor: pointer;
     }
+
+    /* Margin for radio/checkbox elements */
     input[type="radio"], input[type="checkbox"] {
       margin-right: 10px;
     }
   </style>
 </head>
+
 <body>
+  <!-- Container for all quiz content rendered dynamically -->
   <div id="quiz"></div>
 
   <script>
+    // Tracks which question (frame) the user is on
     let currentFrame = 0;
+
+    // Stores answers from frames 2 to 8
     const formData = {};
+
+    // Will hold the uploaded image file
     let uploadedFile = null;
 
+    // Returns true if the screen is small (mobile)
     const isMobile = () => window.innerWidth <= 768;
 
+    // All quiz steps as individual frames (Frame 1–10)
     const frames = [
       {
         id: 'frame1',
@@ -88,6 +119,8 @@
           <button onclick="nextFrame()">Start Skin Analysis</button>
         </div>`
       },
+
+      // Frame 2: Single choice skin type
       {
         id: 'frame2',
         bg: isMobile() ? 'mobile-2.jpg' : 'desktop-2.jpg',
@@ -101,6 +134,8 @@
           <button onclick="saveAnswer('q2')">Next</button>
         </div>`
       },
+
+      // Frame 3: Single choice sensitive skin
       {
         id: 'frame3',
         bg: isMobile() ? 'mobile-3.jpg' : 'desktop-3.jpg',
@@ -114,6 +149,8 @@
           <button onclick="saveAnswer('q3')">Next</button>
         </div>`
       },
+
+      // Frame 4: Multiple skin concerns
       {
         id: 'frame4',
         bg: isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
@@ -121,29 +158,26 @@
           <h2>Do you have any personal skin concerns?</h2>
           <p>Select all that apply.</p>
           <div class="options">
-            ${[
-              "Fine Lines & Wrinkles","Under Eye Puffiness","Redness","Dull/Tired Skin","Dryness",
-              "Dark Circles","Visible Pores","Lack of Firmness (Face/Neck)",
-              "Hyperpigmentation","Spots & Blemishes","Oiliness","Dark Spots / Age Spots"
-            ].map(val => `<label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
+            ${[/* all options */].map(val => `<label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
           </div>
           <button onclick="saveMultiAnswer('q4')">Next</button>
         </div>`
       },
+
+      // Frame 5: Environmental/lifestyle factors
       {
         id: 'frame5',
         bg: isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
         html: `<div class="question-box">
           <h2>Do you think any of these factors affect your skin?</h2>
           <div class="options">
-            ${[
-              "Sun Exposure","Pollution / Air Quality","Variation in Temperature","Poor Sleep",
-              "Everyday Stress","Menopause Transition","Pregnancy / Breast Feeding","None of these"
-            ].map(val => `<label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
+            ${[/* environmental options */].map(val => `<label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
           </div>
           <button onclick="saveMultiAnswer('q5')">Next</button>
         </div>`
       },
+
+      // Frame 6: Gender identity
       {
         id: 'frame6',
         bg: isMobile() ? 'mobile-6.jpg' : 'desktop-6.jpg',
@@ -156,6 +190,8 @@
           <button onclick="saveAnswer('q6')">Next</button>
         </div>`
       },
+
+      // Frame 7: Age group
       {
         id: 'frame7',
         bg: isMobile() ? 'mobile-7.jpg' : 'desktop-7.jpg',
@@ -168,6 +204,8 @@
           <button onclick="saveAnswer('q7')">Next</button>
         </div>`
       },
+
+      // Frame 9: Upload or take photo
       {
         id: 'frame9',
         bg: isMobile() ? 'mobile-9.jpg' : 'desktop-9.jpg',
@@ -181,6 +219,8 @@
           <button onclick="submitImage()">Analyze</button>
         </div>`
       },
+
+      // Frame 10: Results (to be filled after image is analyzed)
       {
         id: 'frame10',
         bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
@@ -191,6 +231,7 @@
       }
     ];
 
+    // Render the current frame content
     function renderFrame() {
       const quiz = document.getElementById('quiz');
       const frame = frames[currentFrame];
@@ -198,11 +239,13 @@
       quiz.innerHTML = `<div class="frame" style="background:${bg}">${frame.html}</div>`;
     }
 
+    // Advance to next frame
     function nextFrame() {
       currentFrame++;
       renderFrame();
     }
 
+    // Save single-choice (radio) answer
     function saveAnswer(key) {
       const val = document.querySelector(`input[name='${key}']:checked`);
       if (!val) return alert("Please select an option");
@@ -210,6 +253,7 @@
       nextFrame();
     }
 
+    // Save multiple-choice (checkbox) answers
     function saveMultiAnswer(key) {
       const checkboxes = [...document.querySelectorAll(`input[name='${key}']:checked`)];
       if (!checkboxes.length) return alert("Please select at least one");
@@ -217,6 +261,7 @@
       nextFrame();
     }
 
+    // Preview uploaded/taken image
     function handleImage(e) {
       uploadedFile = e.target.files[0];
       if (!uploadedFile) return;
@@ -229,13 +274,12 @@
       reader.readAsDataURL(uploadedFile);
     }
 
+    // Submit image to /api/analyze and show result in Frame 10
     async function submitImage() {
       if (!uploadedFile) return alert("Please upload or take a photo first.");
-
       const form = new FormData();
       form.append('image', uploadedFile);
-
-      nextFrame(); // go to Frame 10
+      nextFrame();
 
       const box = document.getElementById('resultBox');
       box.innerHTML = '<p>Analyzing...</p>';
@@ -245,7 +289,6 @@
           method: 'POST',
           body: form
         });
-
         const data = await res.json();
 
         if (data.error_code === 0 && data.result) {
@@ -258,39 +301,33 @@
           html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
           html += `</ul>`;
 
-          const maps = {
-            brown_area: "Brown Area Map",
-            red_area: "Red Area Map",
-            texture_enhanced_pores_map: "Pore Map",
-            texture_enhanced_blackheads_map: "Blackhead Map",
-            texture_enhanced_lines_map: "Wrinkle Map",
-            water_area_map: "Water Map",
-            rough_area_map: "Roughness Map",
-            roi_outline_map: "Region of Interest Map"
-          };
-
+          // 🔽 (Optional: face maps shown here — we can comment this next)
+          /*
+          const maps = { /* map labels */ };
           const faceMaps = result.face_maps || {};
-
           for (const key in maps) {
             const base64 = faceMaps[key] || result[key];
             if (base64) {
-              html += `<p><strong>${maps[key]}</strong></p><img src="data:image/jpeg;base64,${base64}" style="max-width:100%; margin-bottom: 20px;" />`;
+              html += `<p><strong>${maps[key]}</strong></p><img src="data:image/jpeg;base64,${base64}" />`;
             }
           }
-
+          */
+            
+        
           box.innerHTML = html;
         } else {
           box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
         }
       } catch (err) {
-        console.error('❌ Error connecting to server:', err);
         box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
       }
     }
 
+    // Load the first frame on page load
     renderFrame();
   </script>
 </body>
 </html>
+
 
 
