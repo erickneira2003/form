@@ -245,14 +245,14 @@
     ];
 
     // Render the current frame content
-    function renderFrame() {
-      const quiz = document.getElementById('quiz');
-      const frame = frames[currentFrame];
-      const bgSrc = typeof frame.bg === 'function' ? frame.bg() : frame.bg;
-      const bg = bgSrc.startsWith('#') ? bgSrc : `url(${bgSrc})`;
-
-      quiz.innerHTML = `<div class="frame" style="background:${bg}">${frame.html}</div>`;
+   function renderFrame() {
+    const quiz = document.getElementById('quiz');
+    const frame = frames[currentFrame];
+    const bgValue = typeof frame.bg === 'function' ? frame.bg() : frame.bg;
+    const bg = bgValue.startsWith('#') ? bgValue : `url(${bgValue})`;
+    quiz.innerHTML = `<div class="frame" style="background:${bg}">${frame.html}</div>`;
     }
+    
 
     // Advance to next frame
     function nextFrame() {
@@ -308,21 +308,20 @@
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
-                   let html = `
-                      <div style="text-align: center;">
-                    
-                        <div style="margin-bottom: 0.5rem;">
-                            <p style="margin: 0.25rem 0;"><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
-                            <p style="margin: 0.25rem 0;"><strong>Skin Type:</strong> ${["Oily skin", "Dry skin", "Neutral skin", "Combination skin"][result.skin_type?.skin_type]}</p>
-                            <p style="margin: 0.25rem 0;"><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
-                          </div>
-                          <canvas id="radarChart" width="300" height="300" style="margin-top: 0.25rem;"></canvas>
-
-                    
+                  let html = `
+                      <div style="text-align:center; margin: 0;">
+                        <div style="margin-bottom: 0;">
+                          <p style="margin: 0;"><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
+                          <p style="margin: 0;"><strong>Skin Type:</strong> ${["Oily skin", "Dry skin", "Neutral skin", "Combination skin"][result.skin_type?.skin_type]}</p>
+                          <p style="margin: 0;"><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
+                        </div>
+                        <div style="margin-top: 4px;">
+                          <canvas id="radarChart" width="300" height="300" style="display: block;"></canvas>
+                        </div>
                       </div>
                     `;
 
-                // box.innerHTML = html;
+                box.innerHTML = html;
                 
                 // 🟢 Initialize Chart.js radar chart after DOM is updated
                 const ctx = document.getElementById('radarChart').getContext('2d');
@@ -404,6 +403,21 @@
     // Load the first frame on page load
     renderFrame();
   </script>
+
+  <script>
+      const backgroundImages = [
+        'mobile-1.jpg', 'mobile-2.jpg', 'mobile-3.jpg', 'mobile-4.jpg',
+        'mobile-5.jpg', 'mobile-6.jpg', 'mobile-7.jpg', 'mobile-9.jpg', 'mobile-10.jpg',
+        'desktop-1.jpg', 'desktop-2.jpg', 'desktop-3.jpg', 'desktop-4.jpg',
+        'desktop-5.jpg', 'desktop-6.jpg', 'desktop-7.jpg', 'desktop-9.jpg', 'desktop-10.jpg'
+      ];
+    
+      backgroundImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    </script>
+
 </body>
 </html>
 
