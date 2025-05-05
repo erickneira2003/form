@@ -298,21 +298,21 @@
         });
         const data = await res.json();
 
-        if (data.error_code === 0 && data.result) {
+         if (data.error_code === 0 && data.result) {
           const result = data.result;
           let html = `<ul>`;
           html += `<li><strong>Skin Age:</strong> ${result.skin_age?.value}</li>`;
           html += `<li><strong>Acne Count:</strong> ${result.acne?.count}</li>`;
           html += `<li><strong>Blackhead Count:</strong> ${result.blackhead_count}</li>`;
           html += `<li><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</li>`;
-          html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
-          html += `<li><strong>Acne Score:</strong> ${result.acne?.acne_score}</li>`;
-          html += `<li><strong>Wrinkle Score:</strong> ${result.wrinkle_info?.wrinkle_score}</li>`;
+          html += `<li><strong>Total Score:</strong> ${result.total_score}</li>`;
+          html += `<li><strong>Acne Score:</strong> ${result.acne_score}</li>`;
+          html += `<li><strong>Wrinkle Score:</strong> ${result.wrinkle_score}</li>`;
           html += `<li><strong>Blackhead Score:</strong> ${result.blackhead_score}</li>`;
-          html += `<li><strong>Pore Score:</strong> ${result.pore?.pore_score}</li>`;
+          html += `<li><strong>Pore Score:</strong> ${result.pores_score}</li>`;
           html += `<li><strong>Sensitivity Score:</strong> ${result.sensitivity_score}</li>`;
-          html += `<li><strong>Roughness Score:</strong> ${result.rough?.rough_score}</li>`;
-          html += `<li><strong>Water Score:</strong> ${result.water?.water_score}</li>`;
+          html += `<li><strong>Roughness Score:</strong> ${result.rough_score}</li>`;
+          html += `<li><strong>Water Score:</strong> ${result.water_score}</li>`;
           html += `</ul>`;
 
 
