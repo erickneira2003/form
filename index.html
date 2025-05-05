@@ -308,12 +308,15 @@
           const result = data.result;
                    let html = `
                       <div style="text-align: center;">
+                    
                         <div style="margin-bottom: 1rem;">
                           <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
                           <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
                           <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
                         </div>
-                        <canvas id="radarChart" width="300" height="300"></canvas>
+                    
+                        <canvas id="radarChart" width="300" height="300" style="margin-top: 1rem;"></canvas>
+                    
                       </div>
                     `;
 
