@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
   
   <!-- Loads Chart.js for radar chart -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <style>
     /* Basic page and font setup */
@@ -234,10 +234,12 @@
             {
             id: 'frame10',
             bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
-            html: `<div class="question-box">
-              <h2>AI Results</h2>
-              <div id="resultBox">Waiting for analysis...</div>
-            </div>`
+           html: `<div class="question-box">
+                    <h2>AI Results</h2>
+                    <div id="resultBox">Waiting for analysis...</div>
+                    <canvas id="radarChart" width="400" height="400" style="max-width: 100%; margin: 1rem auto;"></canvas>
+                  </div>`
+
             }
 
     ];
@@ -304,18 +306,17 @@
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
-                let html = `
-                  <div style="text-align: center;">
-                    <canvas id="radarChart" width="300" height="300"></canvas>
-                
-                    <div style="margin-top: 1rem;">
-                      <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
-                      <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
-                      <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
-                    </div>
-                  </div>
-                `;
-                
+                   let html = `
+                      <div style="text-align: center;">
+                        <div style="margin-bottom: 1rem;">
+                          <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
+                          <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
+                          <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
+                        </div>
+                        <canvas id="radarChart" width="300" height="300"></canvas>
+                      </div>
+                    `;
+
                 box.innerHTML = html;
                 
                 // 🟢 Initialize Chart.js radar chart after DOM is updated
@@ -338,21 +339,39 @@
                         result.score_info?.rough_score,
                         result.score_info?.water_score
                       ],
-                      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                      borderColor: 'rgba(54, 162, 235, 1)',
-                      pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                      backgroundColor: 'rgba(128, 128, 128, 0.3)',
+                      borderColor: 'gray',
+                      pointBackgroundColor: 'gray',
                       pointBorderColor: '#fff'
                     }]
                   },
-                  options: {
-                    responsive: false,
-                    scales: {
-                      r: {
-                        beginAtZero: true,
-                        max: 100
-                      }
-                    }
-                  }
+                                          options: {
+                          responsive: false,
+                          scales: {
+                            r: {
+                              beginAtZero: true,
+                              max: 100,
+                              ticks: {
+                                display: false // hides 10–100 radial ticks
+                              },
+                              pointLabels: {
+                                callback: function(label, index) {
+                                  const score = [
+                                    result.score_info?.acne_score,
+                                    result.score_info?.wrinkle_score,
+                                    result.score_info?.blackhead_score,
+                                    result.score_info?.pores_score,
+                                    result.score_info?.sensitivity_score,
+                                    result.score_info?.rough_score,
+                                    result.score_info?.water_score
+                                  ][index];
+                                  return `${label}\n${score}`;
+                                }
+                              }
+                            }
+                          }
+                        }
+
                 });
 
 
