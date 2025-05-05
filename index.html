@@ -236,7 +236,6 @@
             bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
            html: `<div class="question-box">
                     <h2>AI Results</h2>
-                    <div id="resultBox">Waiting for analysis...</div>
                     <canvas id="radarChart" width="400" height="400" style="max-width: 100%; margin: 1rem auto;"></canvas>
                   </div>`
 
@@ -294,17 +293,7 @@
         form.append('image', uploadedFile);
         nextFrame(); // go to Frame 10
         
-        const analyzeBox = document.createElement('div');
-          analyzeBox.id = 'analyzingBox';
-          analyzeBox.className = 'question-box';
-          analyzeBox.innerHTML = '<p>Analyzing...</p>';
-          document.querySelector('.frame').appendChild(analyzeBox);
-          
-          // Proceed to next frame after small delay to allow UX moment
-          setTimeout(() => {
-            nextFrame();
-          }, 500);
-
+   nextFrame(); // go to Frame 10 immediately
 
       try {
         const res = await fetch('/api/analyze', {
