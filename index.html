@@ -151,18 +151,22 @@
       },
 
       // Frame 4: Multiple skin concerns
-      {
-        id: 'frame4',
-        bg: isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
-        html: `<div class="question-box">
-          <h2>Do you have any personal skin concerns?</h2>
-          <p>Select all that apply.</p>
-          <div class="options">
-            ${[/* all options */].map(val => `<label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
-          </div>
-          <button onclick="saveMultiAnswer('q4')">Next</button>
+     {
+      id: 'frame4',
+      bg: isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
+      html: `<div class="question-box">
+        <h2>Do you have any personal skin concerns?</h2>
+        <p>Select all that apply.</p>
+        <div class="options">
+          ${[
+          "Fine Lines & Wrinkles", "Under Eye Puffiness", "Redness", "Dull/Tired Skin", "Dryness",
+          "Dark Circles", "Visible Pores", "Lack of Firmness (Face/Neck)",
+          "Hyperpigmentation", "Spots & Blemishes", "Oiliness", "Dark Spots / Age Spots"
+          ].map(val => `<label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
+        </div>
+        <button onclick="saveMultiAnswer('q4')">Next</button>
         </div>`
-      },
+        },
 
       // Frame 5: Environmental/lifestyle factors
       {
