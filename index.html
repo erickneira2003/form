@@ -242,40 +242,65 @@
       reader.readAsDataURL(uploadedFile);
     }
 
-    async function submitImage() {
-      if (!uploadedFile) return alert("Please upload or take a photo first.");
-      const fd = new FormData();
-      fd.append('image', uploadedFile);
-      nextFrame();
-      const res = await fetch('/api/analyze', { method: 'POST', body: fd });
-      const data = await res.json();
-      const box = document.getElementById('resultBox');
-      if (data.result) {
-        const result = data.result;
-        let html = `<ul>`;
-        html += `<li><strong>Skin Age:</strong> ${result.skin_age?.value}</li>`;
-        html += `<li><strong>Acne Count:</strong> ${result.acne?.count}</li>`;
-        html += `<li><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</li>`;
-        html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
-        html += `</ul>`;
-        for (const [key, label] of Object.entries({
-          brown_area: "Brown Area Map",
-          red_area: "Red Area Map",
-          texture_enhanced_pores_map: "Pore Map",
-          texture_enhanced_blackheads_map: "Blackhead Map",
-          texture_enhanced_lines_map: "Wrinkle Map",
-          water_area_map: "Water Map",
-          rough_area_map: "Roughness Map",
-          roi_outline_map: "Region of Interest Map"
-        })) {
-          const img = result.face_maps?.[key] || result[key];
-          if (img) html += `<p><strong>${label}</strong></p><img src="data:image/jpeg;base64,${img}" />`;
+async function submitImage() {
+  if (!uploadedFile) return alert("Please upload or take a photo first.");
+
+  const formData = new FormData();
+  formData.append('image', uploadedFile);
+
+  nextFrame(); // Show frame 10 with placeholder
+
+  const box = document.getElementById('resultBox');
+  box.innerHTML = '<p>Analyzing...</p>';
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.error_code === 0 && data.result) {
+      const result = data.result;
+      let html = `<p><strong>✅ Analysis Complete:</strong></p><ul>`;
+      html += `<li><strong>Skin Age:</strong> ${result.skin_age?.value}</li>`;
+      html += `<li><strong>Acne Count:</strong> ${result.acne?.count}</li>`;
+      html += `<li><strong>Blackhead Count:</strong> ${result.blackhead_count}</li>`;
+      html += `<li><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</li>`;
+      html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
+      html += `</ul>`;
+
+      const maps = {
+        brown_area: "Brown Area Map",
+        red_area: "Red Area Map",
+        texture_enhanced_pores_map: "Pore Map",
+        texture_enhanced_blackheads_map: "Blackhead Map",
+        texture_enhanced_lines_map: "Wrinkle Map",
+        water_area_map: "Water Map",
+        rough_area_map: "Roughness Map",
+        roi_outline_map: "Region of Interest Map"
+      };
+
+      const faceMaps = result.face_maps || {};
+
+      for (const key in maps) {
+        const base64 = faceMaps[key] || result[key];
+        if (base64) {
+          html += `<p><strong>${maps[key]}</strong></p><img src="data:image/jpeg;base64,${base64}" style="max-width:100%; margin-bottom: 20px;" />`;
         }
-        box.innerHTML = html;
-      } else {
-        box.innerText = '❌ Error analyzing image';
       }
+
+      box.innerHTML = html;
+    } else {
+      box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
     }
+  } catch (err) {
+    console.error('❌ Error connecting to server:', err);
+    box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
+  }
+}
+
 
     renderFrame();
   </script>
