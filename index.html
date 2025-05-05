@@ -169,17 +169,20 @@
         },
 
       // Frame 5: Environmental/lifestyle factors
-      {
-        id: 'frame5',
-        bg: isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
-        html: `<div class="question-box">
-          <h2>Do you think any of these factors affect your skin?</h2>
-          <div class="options">
-            ${[/* environmental options */].map(val => `<label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
-          </div>
-          <button onclick="saveMultiAnswer('q5')">Next</button>
-        </div>`
-      },
+          {
+            id: 'frame5',
+            bg: isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
+            html: `<div class="question-box">
+              <h2>Do you think any of these factors affect your skin?</h2>
+              <div class="options">
+                ${[
+                  "Sun Exposure", "Pollution / Air Quality", "Variation in Temperature", "Poor Sleep",
+                  "Everyday Stress", "Menopause Transition", "Pregnancy / Breast Feeding", "None of these"
+                ].map(val => `<label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
+              </div>
+              <button onclick="saveMultiAnswer('q5')">Next</button>
+            </div>`
+          },
 
       // Frame 6: Gender identity
       {
