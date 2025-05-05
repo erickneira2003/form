@@ -1,19 +1,11 @@
 {
-  // 📦 Project name for identification (not used in deployment directly)
-  "name": "skin-analyzer", 
-  // 🔢 Project version (useful for your own version tracking)
-  "version": "1.0.0", 
-  // 🧠 Tells Node.js to treat files as ES Modules (enables `import` instead of `require`)
-  "type": "module", 
-  // 📁 Dependencies required for the backend (API handler in analyze.js)
-  "dependencies": { 
-  // 📡 Axios is used to send the image and form data to the AILab API via HTTP POST
-  "axios": "^1.6.0",
-  // 🧾 FormData helps construct multipart/form-data requests (required by AILab's API)
-  "form-data": "^4.0.0",
-  // 📤 Formidable is used to parse uploaded files from the request in /api/analyze.js
-  "formidable": "^3.5.0",
-  // 🖼 Sharp is used to convert the uploaded image into JPEG format (required by AILab)
-  "sharp": "^0.32.0"
-}
+  "name": "skin-analyzer",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "form-data": "^4.0.0",
+    "formidable": "^3.5.0",
+    "sharp": "^0.32.0"
+  }
 }
