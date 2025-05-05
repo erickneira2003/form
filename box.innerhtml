@@ -291,11 +291,21 @@
     async function submitImage() {
       if (!uploadedFile) return alert("Please upload or take a photo first.");
       const form = new FormData();
-        form.append('image', uploadedFile);
-        nextFrame(); // go to Frame 10
+    
+      form.append('image', uploadedFile);
         
-        const box = document.getElementById('resultBox');
-        box.innerHTML = '<p>Analyzing...</p>';
+        // 👇 Show "Analyzing..." below preview without changing frame
+        let existingResults = document.getElementById('results');
+        if (!existingResults) {
+          const analyzeBox = document.createElement('div');
+          analyzeBox.id = 'results';
+          analyzeBox.className = 'question-box';
+          analyzeBox.innerHTML = '<p>Analyzing...</p>';
+          document.querySelector('.frame').appendChild(analyzeBox);
+        } else {
+          existingResults.innerHTML = '<p>Analyzing...</p>';
+        }
+
 
       try {
         const res = await fetch('/api/analyze', {
@@ -309,7 +319,7 @@
                    let html = `
                       <div style="text-align: center;">
                     
-                        <div style="margin-bottom: 1rem;">
+                        <div style="margin-bottom: 0.25rem;">
                           <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
                           <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
                           <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
@@ -320,7 +330,7 @@
                       </div>
                     `;
 
-                // box.innerHTML = html;
+                document.getElementById('results').innerHTML = html;
                 
                 // 🟢 Initialize Chart.js radar chart after DOM is updated
                 const ctx = document.getElementById('radarChart').getContext('2d');
@@ -390,12 +400,12 @@
           //  }
                 
         
-          box.innerHTML = html;
+          document.getElementById('results').innerHTML = html;
         } else {
-          box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
+          document.getElementById('results').innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
         }
       } catch (err) {
-        box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
+        document.getElementById('results').innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
       }
     }
 
