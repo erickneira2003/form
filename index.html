@@ -9,6 +9,9 @@
 
   <!-- Loads the Lato font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  
+  <!-- Loads Chart.js for radar chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     /* Basic page and font setup */
@@ -301,31 +304,60 @@
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
-        let html = `
-            <div style="position: relative; text-align: center;">
-              <img src="radar-graphic.png" alt="AI Radar Chart" style="max-width: 100%; margin: 1rem auto;">
-              
-              <div style="margin-top: 1rem;">
-                <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
-                <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
-                <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
-              </div>
-          
-              <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 1.5rem;">
-                <div><strong>Acne Score:</strong> ${result.score_info?.acne_score}</div>
-                <div><strong>Wrinkle Score:</strong> ${result.score_info?.wrinkle_score}</div>
-                <div><strong>Blackhead Score:</strong> ${result.score_info?.blackhead_score}</div>
-                <div><strong>Pore Score:</strong> ${result.score_info?.pores_score}</div>
-                <div><strong>Sensitivity Score:</strong> ${result.score_info?.sensitivity_score}</div>
-                <div><strong>Roughness Score:</strong> ${result.score_info?.rough_score}</div>
-                <div><strong>Water Score:</strong> ${result.score_info?.water_score}</div>
-              </div>
-          
-              <!-- Hidden results (commented out for now) -->
-              <!-- <p><strong>Acne Count:</strong> ${result.acne?.count}</p> -->
-              <!-- <p><strong>Blackhead Count:</strong> ${result.blackhead_count}</p> -->
-            </div>
-          `;
+
+           let html = `
+                  <div style="text-align: center;">
+                    <canvas id="radarChart" width="400" height="400"></canvas>
+                    <div style="margin-top: 1rem;">
+                      <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
+                      <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
+                      <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
+                    </div>
+                  </div>
+                `;
+                
+                box.innerHTML = html;
+                
+                const ctx = document.getElementById('radarChart');
+                new Chart(ctx, {
+                  type: 'radar',
+                  data: {
+                    labels: [
+                      'Acne', 'Wrinkles', 'Blackheads',
+                      'Pores', 'Sensitivity', 'Roughness', 'Water'
+                    ],
+                    datasets: [{
+                      label: 'Skin Score',
+                      data: [
+                        result.score_info?.acne_score,
+                        result.score_info?.wrinkle_score,
+                        result.score_info?.blackhead_score,
+                        result.score_info?.pores_score,
+                        result.score_info?.sensitivity_score,
+                        result.score_info?.rough_score,
+                        result.score_info?.water_score
+                      ],
+                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                      borderColor: 'black',
+                      borderWidth: 2
+                    }]
+                  },
+                  options: {
+                    responsive: true,
+                    scales: {
+                      r: {
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        pointLabels: {
+                          font: {
+                            size: 12
+                          }
+                        }
+                      }
+                    }
+                  }
+                });
+
 
 
           // 🔽 (Optional: face maps shown here — we can comment this next)
