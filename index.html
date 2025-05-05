@@ -304,10 +304,11 @@
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
-
-           let html = `
+                let html = `
                   <div style="text-align: center;">
-                    <canvas id="radarChart" width="400" height="400"></canvas>
+                    <h2>AI Results</h2>
+                    <canvas id="radarChart" width="300" height="300"></canvas>
+                
                     <div style="margin-top: 1rem;">
                       <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
                       <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
@@ -318,13 +319,14 @@
                 
                 box.innerHTML = html;
                 
-                const ctx = document.getElementById('radarChart');
+                // 🟢 Initialize Chart.js radar chart after DOM is updated
+                const ctx = document.getElementById('radarChart').getContext('2d');
                 new Chart(ctx, {
                   type: 'radar',
                   data: {
                     labels: [
-                      'Acne', 'Wrinkles', 'Blackheads',
-                      'Pores', 'Sensitivity', 'Roughness', 'Water'
+                      'Acne', 'Wrinkles', 'Blackheads', 'Pores',
+                      'Sensitivity', 'Roughness', 'Moisture'
                     ],
                     datasets: [{
                       label: 'Skin Score',
@@ -337,27 +339,22 @@
                         result.score_info?.rough_score,
                         result.score_info?.water_score
                       ],
-                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                      borderColor: 'black',
-                      borderWidth: 2
+                      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                      borderColor: 'rgba(54, 162, 235, 1)',
+                      pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                      pointBorderColor: '#fff'
                     }]
                   },
                   options: {
-                    responsive: true,
+                    responsive: false,
                     scales: {
                       r: {
-                        suggestedMin: 0,
-                        suggestedMax: 100,
-                        pointLabels: {
-                          font: {
-                            size: 12
-                          }
-                        }
+                        beginAtZero: true,
+                        max: 100
                       }
                     }
                   }
                 });
-
 
 
           // 🔽 (Optional: face maps shown here — we can comment this next)
