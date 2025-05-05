@@ -24,9 +24,10 @@
       background-position: center;
       padding: 2rem;
       box-sizing: border-box;
+      text-align: center;
     }
     .question-box {
-      background: rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.9);
       padding: 2rem;
       border-radius: 1rem;
       max-width: 600px;
@@ -40,6 +41,7 @@
       border-radius: 5px;
       margin-top: 1rem;
       font-size: 1rem;
+      cursor: pointer;
     }
     input[type="file"] {
       display: none;
@@ -79,128 +81,113 @@
       {
         id: 'frame1',
         bg: isMobile() ? 'mobile-1.jpg' : 'desktop-1.jpg',
-        html: `
-          <div class="question-box">
-            <h2>Ready to find your perfect skincare routine?</h2>
-            <p>No7 Personalised Skin Analysis helps you find the right products for your skin in less than 2 minutes.</p>
-            <p>By tapping 'Start Skin Analysis' you agree to the Privacy Policy and Terms of use</p>
-            <button onclick="nextFrame()">Start Skin Analysis</button>
-          </div>
-        `
+        html: `<div class="question-box">
+          <h2>Ready to find your perfect skincare routine?</h2>
+          <p>No7 Personalised Skin Analysis helps you find the right products for your skin in less than 2 minutes.</p>
+          <p>By tapping 'Start Skin Analysis' you agree to the Privacy Policy and Terms of use</p>
+          <button onclick="nextFrame()">Start Skin Analysis</button>
+        </div>`
       },
       {
         id: 'frame2',
         bg: isMobile() ? 'mobile-2.jpg' : 'desktop-2.jpg',
-        html: `
-          <div class="question-box">
-            <h2>What is your skin type?</h2>
-            <p>Understanding your skin type helps us recommend the best products for your skin.</p>
-            <div class="options">
-              ${["Normal","Dry","Oily","Combination","Not Sure"].map(type => `
-                <label><input type="radio" name="q2" value="${type}"> ${type}</label>`).join('')}
-            </div>
-            <button onclick="saveAnswer('q2')">Next</button>
+        html: `<div class="question-box">
+          <h2>What is your skin type?</h2>
+          <p>Understanding your skin type helps us recommend the best products for your skin.</p>
+          <div class="options">
+            ${["Normal","Dry","Oily","Combination","Not Sure"].map(type => `
+              <label><input type="radio" name="q2" value="${type}"> ${type}</label>`).join('')}
           </div>
-        `
+          <button onclick="saveAnswer('q2')">Next</button>
+        </div>`
       },
       {
         id: 'frame3',
         bg: isMobile() ? 'mobile-3.jpg' : 'desktop-3.jpg',
-        html: `
-          <div class="question-box">
-            <h2>Do you have sensitive skin?</h2>
-            <p>Sensitive skin often feels tight and can become itchy, irritated and visibly red. It has a tendency to react to changes in the weather or certain products or ingredients.</p>
-            <div class="options">
-              <label><input type="radio" name="q3" value="Yes"> Yes</label>
-              <label><input type="radio" name="q3" value="No"> No</label>
-            </div>
-            <button onclick="saveAnswer('q3')">Next</button>
+        html: `<div class="question-box">
+          <h2>Do you have sensitive skin?</h2>
+          <p>Sensitive skin often feels tight and can become itchy, irritated and visibly red.</p>
+          <div class="options">
+            <label><input type="radio" name="q3" value="Yes"> Yes</label>
+            <label><input type="radio" name="q3" value="No"> No</label>
           </div>
-        `
+          <button onclick="saveAnswer('q3')">Next</button>
+        </div>`
       },
       {
         id: 'frame4',
         bg: isMobile() ? 'mobile-4.jpg' : 'desktop-4.jpg',
-        html: `
-          <div class="question-box">
-            <h2>Do you have any personal skin concerns you would like to improve?</h2>
-            <p>Select all that apply.</p>
-            <div class="options">
-              ${["Fine Lines & Wrinkles","Under Eye Puffiness","Redness","Dull/Tired Skin","Dryness","Dark Circles","Visible Pores","Lack of Firmness (Face/Neck)","Hyperpigmentation","Spots & Blemishes","Oiliness","Dark Spots / Age Spots"].map(val => `
-                <label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
-            </div>
-            <button onclick="saveMultiAnswer('q4')">Next</button>
+        html: `<div class="question-box">
+          <h2>Do you have any personal skin concerns?</h2>
+          <p>Select all that apply.</p>
+          <div class="options">
+            ${[
+              "Fine Lines & Wrinkles","Under Eye Puffiness","Redness","Dull/Tired Skin","Dryness",
+              "Dark Circles","Visible Pores","Lack of Firmness (Face/Neck)",
+              "Hyperpigmentation","Spots & Blemishes","Oiliness","Dark Spots / Age Spots"
+            ].map(val => `<label><input type="checkbox" name="q4" value="${val}"> ${val}</label>`).join('')}
           </div>
-        `
+          <button onclick="saveMultiAnswer('q4')">Next</button>
+        </div>`
       },
       {
         id: 'frame5',
         bg: isMobile() ? 'mobile-5.jpg' : 'desktop-5.jpg',
-        html: `
-          <div class="question-box">
-            <h2>Do you think any of these factors could be affecting your skin?</h2>
-            <p>Select all that apply.</p>
-            <div class="options">
-              ${["Sun Exposure","Pollution / Air Quality","Variation in Temperature","Poor Sleep","Everyday Stress","Menopause Transition","Pregnancy / Breast Feeding","None of these"].map(val => `
-                <label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
-            </div>
-            <button onclick="saveMultiAnswer('q5')">Next</button>
+        html: `<div class="question-box">
+          <h2>Do you think any of these factors affect your skin?</h2>
+          <div class="options">
+            ${[
+              "Sun Exposure","Pollution / Air Quality","Variation in Temperature","Poor Sleep",
+              "Everyday Stress","Menopause Transition","Pregnancy / Breast Feeding","None of these"
+            ].map(val => `<label><input type="checkbox" name="q5" value="${val}"> ${val}</label>`).join('')}
           </div>
-        `
+          <button onclick="saveMultiAnswer('q5')">Next</button>
+        </div>`
       },
       {
         id: 'frame6',
         bg: isMobile() ? 'mobile-6.jpg' : 'desktop-6.jpg',
-        html: `
-          <div class="question-box">
-            <h2>Do you identify as a:</h2>
-            <div class="options">
-              ${["Female","Male","Non-binary","Other","Prefer not to say"].map(g => `
-                <label><input type="radio" name="q6" value="${g}"> ${g}</label>`).join('')}
-            </div>
-            <button onclick="saveAnswer('q6')">Next</button>
+        html: `<div class="question-box">
+          <h2>Do you identify as:</h2>
+          <div class="options">
+            ${["Female","Male","Non-binary","Other","Prefer not to say"].map(g => `
+              <label><input type="radio" name="q6" value="${g}"> ${g}</label>`).join('')}
           </div>
-        `
+          <button onclick="saveAnswer('q6')">Next</button>
+        </div>`
       },
       {
         id: 'frame7',
         bg: isMobile() ? 'mobile-7.jpg' : 'desktop-7.jpg',
-        html: `
-          <div class="question-box">
-            <h2>How old are you?</h2>
-            <p>Knowing your age helps us understand your skin better.</p>
-            <div class="options">
-              ${["<30","30-44","45-60",">60"].map(val => `
-                <label><input type="radio" name="q7" value="${val}"> ${val}</label>`).join('')}
-            </div>
-            <button onclick="saveAnswer('q7')">Next</button>
+        html: `<div class="question-box">
+          <h2>How old are you?</h2>
+          <div class="options">
+            ${["<30","30-44","45-60",">60"].map(val => `
+              <label><input type="radio" name="q7" value="${val}"> ${val}</label>`).join('')}
           </div>
-        `
+          <button onclick="saveAnswer('q7')">Next</button>
+        </div>`
       },
       {
         id: 'frame9',
         bg: isMobile() ? 'mobile-9.jpg' : 'desktop-9.jpg',
-        html: `
-          <div class="question-box">
-            <h2>Please upload or take a photo</h2>
-            <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
-            <button onclick="document.getElementById('attachPhoto').click()">📂 Attach Your Photo</button>
-            <input type="file" id="takePhoto" accept="image/*" capture="environment" onchange="handleImage(event)">
-            <input type="file" id="attachPhoto" accept="image/*" onchange="handleImage(event)">
-            <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
-            <button onclick="submitImage()">Analyze</button>
-          </div>
-        `
+        html: `<div class="question-box">
+          <h2>Please upload or take a photo</h2>
+          <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
+          <button onclick="document.getElementById('attachPhoto').click()">📂 Attach Your Photo</button>
+          <input type="file" id="takePhoto" accept="image/*" capture="environment" onchange="handleImage(event)">
+          <input type="file" id="attachPhoto" accept="image/*" onchange="handleImage(event)">
+          <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
+          <button onclick="submitImage()">Analyze</button>
+        </div>`
       },
       {
         id: 'frame10',
         bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
-        html: `
-          <div class="question-box">
-            <h2>AI Results</h2>
-            <div id="resultBox">Waiting for analysis...</div>
-          </div>
-        `
+        html: `<div class="question-box">
+          <h2>AI Results</h2>
+          <div id="resultBox">Waiting for analysis...</div>
+        </div>`
       }
     ];
 
@@ -242,65 +229,64 @@
       reader.readAsDataURL(uploadedFile);
     }
 
-async function submitImage() {
-  if (!uploadedFile) return alert("Please upload or take a photo first.");
+    async function submitImage() {
+      if (!uploadedFile) return alert("Please upload or take a photo first.");
 
-  const formData = new FormData();
-  formData.append('image', uploadedFile);
+      const form = new FormData();
+      form.append('image', uploadedFile);
 
-  nextFrame(); // Show frame 10 with placeholder
+      nextFrame(); // go to Frame 10
 
-  const box = document.getElementById('resultBox');
-  box.innerHTML = '<p>Analyzing...</p>';
+      const box = document.getElementById('resultBox');
+      box.innerHTML = '<p>Analyzing...</p>';
 
-  try {
-    const res = await fetch('/api/analyze', {
-      method: 'POST',
-      body: formData
-    });
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          body: form
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (data.error_code === 0 && data.result) {
-      const result = data.result;
-      let html = `<p><strong>✅ Analysis Complete:</strong></p><ul>`;
-      html += `<li><strong>Skin Age:</strong> ${result.skin_age?.value}</li>`;
-      html += `<li><strong>Acne Count:</strong> ${result.acne?.count}</li>`;
-      html += `<li><strong>Blackhead Count:</strong> ${result.blackhead_count}</li>`;
-      html += `<li><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</li>`;
-      html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
-      html += `</ul>`;
+        if (data.error_code === 0 && data.result) {
+          const result = data.result;
+          let html = `<ul>`;
+          html += `<li><strong>Skin Age:</strong> ${result.skin_age?.value}</li>`;
+          html += `<li><strong>Acne Count:</strong> ${result.acne?.count}</li>`;
+          html += `<li><strong>Blackhead Count:</strong> ${result.blackhead_count}</li>`;
+          html += `<li><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</li>`;
+          html += `<li><strong>Total Score:</strong> ${result.score_info?.total_score}</li>`;
+          html += `</ul>`;
 
-      const maps = {
-        brown_area: "Brown Area Map",
-        red_area: "Red Area Map",
-        texture_enhanced_pores_map: "Pore Map",
-        texture_enhanced_blackheads_map: "Blackhead Map",
-        texture_enhanced_lines_map: "Wrinkle Map",
-        water_area_map: "Water Map",
-        rough_area_map: "Roughness Map",
-        roi_outline_map: "Region of Interest Map"
-      };
+          const maps = {
+            brown_area: "Brown Area Map",
+            red_area: "Red Area Map",
+            texture_enhanced_pores_map: "Pore Map",
+            texture_enhanced_blackheads_map: "Blackhead Map",
+            texture_enhanced_lines_map: "Wrinkle Map",
+            water_area_map: "Water Map",
+            rough_area_map: "Roughness Map",
+            roi_outline_map: "Region of Interest Map"
+          };
 
-      const faceMaps = result.face_maps || {};
+          const faceMaps = result.face_maps || {};
 
-      for (const key in maps) {
-        const base64 = faceMaps[key] || result[key];
-        if (base64) {
-          html += `<p><strong>${maps[key]}</strong></p><img src="data:image/jpeg;base64,${base64}" style="max-width:100%; margin-bottom: 20px;" />`;
+          for (const key in maps) {
+            const base64 = faceMaps[key] || result[key];
+            if (base64) {
+              html += `<p><strong>${maps[key]}</strong></p><img src="data:image/jpeg;base64,${base64}" style="max-width:100%; margin-bottom: 20px;" />`;
+            }
+          }
+
+          box.innerHTML = html;
+        } else {
+          box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
         }
+      } catch (err) {
+        console.error('❌ Error connecting to server:', err);
+        box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
       }
-
-      box.innerHTML = html;
-    } else {
-      box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
     }
-  } catch (err) {
-    console.error('❌ Error connecting to server:', err);
-    box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
-  }
-}
-
 
     renderFrame();
   </script>
