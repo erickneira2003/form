@@ -236,6 +236,7 @@
             bg: isMobile() ? 'mobile-10.jpg' : 'desktop-10.jpg',
            html: `<div class="question-box">
                     <h2>AI Results</h2>
+                    <div id="resultBox">Waiting for analysis...</div>
                     <canvas id="radarChart" width="400" height="400" style="max-width: 100%; margin: 1rem auto;"></canvas>
                   </div>`
 
@@ -293,7 +294,8 @@
         form.append('image', uploadedFile);
         nextFrame(); // go to Frame 10
         
-   nextFrame(); // go to Frame 10 immediately
+        const box = document.getElementById('resultBox');
+        box.innerHTML = '<p>Analyzing...</p>';
 
       try {
         const res = await fetch('/api/analyze', {
@@ -307,7 +309,7 @@
                    let html = `
                       <div style="text-align: center;">
                     
-                        <div style="margin-bottom: 0.25rem;">
+                        <div style="margin-bottom: 1rem;">
                           <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
                           <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
                           <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
@@ -402,6 +404,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
