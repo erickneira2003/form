@@ -294,8 +294,17 @@
         form.append('image', uploadedFile);
         nextFrame(); // go to Frame 10
         
-        const box = document.getElementById('resultBox');
-        box.innerHTML = '<p>Analyzing...</p>';
+        const analyzeBox = document.createElement('div');
+          analyzeBox.id = 'analyzingBox';
+          analyzeBox.className = 'question-box';
+          analyzeBox.innerHTML = '<p>Analyzing...</p>';
+          document.querySelector('.frame').appendChild(analyzeBox);
+          
+          // Proceed to next frame after small delay to allow UX moment
+          setTimeout(() => {
+            nextFrame();
+          }, 500);
+
 
       try {
         const res = await fetch('/api/analyze', {
@@ -309,7 +318,7 @@
                    let html = `
                       <div style="text-align: center;">
                     
-                        <div style="margin-bottom: 1rem;">
+                        <div style="margin-bottom: 0.25rem;">
                           <p><strong>Skin Age:</strong> ${result.skin_age?.value}</p>
                           <p><strong>Skin Type:</strong> ${result.skin_type?.skin_type}</p>
                           <p><strong>Total Score:</strong> ${result.score_info?.total_score}</p>
