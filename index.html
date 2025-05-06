@@ -104,6 +104,9 @@
     // Stores answers from frames 2 to 8
     const formData = {};
 
+    // Will hold the uploaded image file
+    let uploadedFile = null;
+
     // Returns true if the screen is small (mobile)
     const isMobile = () => window.innerWidth <= 768;
 
@@ -220,8 +223,8 @@
           <h2>Please upload or take a photo</h2>
           <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
           <button onclick="document.getElementById('attachPhoto').click()">📂 Attach Your Photo</button>
-          <input type="file" id="takePhoto" accept="image/jpeg,image/jpg" capture="environment">
-          <input type="file" id="attachPhoto" accept="image/jpeg,image/jpg">
+          <input type="file" id="takePhoto" accept="image/*" capture="environment" onchange="handleImage(event)">
+          <input type="file" id="attachPhoto" accept="image/*" onchange="handleImage(event)">
           <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
           <button onclick="submitImage()">Analyze</button>
         </div>`
@@ -286,28 +289,20 @@
 
     // Submit image to /api/analyze and show result in Frame 10
     async function submitImage() {
-        const takePhoto = document.getElementById('takePhoto');
-        const attachPhoto = document.getElementById('attachPhoto');
-        const file = takePhoto.files[0] || attachPhoto.files[0];
-        if (!file) return alert("Please upload or take a photo first.");
+      if (!uploadedFile) return alert("Please upload or take a photo first.");
+      const form = new FormData();
+        form.append('image', uploadedFile);
+        nextFrame(); // go to Frame 10
+        
+        const box = document.getElementById('resultBox');
+        box.innerHTML = '<p>Analyzing...</p>';
 
-        
-          nextFrame(); // go to Frame 10
-          await new Promise(resolve => setTimeout(resolve, 200)); // wait for frame to fully load
-        
-          const form = new FormData();
-          form.append('image', file);
-        
-          const box = document.getElementById('resultBox');
-          box.innerHTML = '<p>Analyzing...</p>';
-        
-          try {
-            const res = await fetch('/api/analyze', {
-              method: 'POST',
-              body: form
-            });
-
-    const data = await res.json();
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          body: form
+        });
+        const data = await res.json();
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
@@ -399,16 +394,15 @@
         } else {
           box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
         }
-            } catch (err) {
-            box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
-          }
-        }
+      } catch (err) {
+        box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
+      }
+    }
 
     // Load the first frame on page load
     renderFrame();
   </script>
 </body>
-</html>
 
 
 
