@@ -104,9 +104,6 @@
     // Stores answers from frames 2 to 8
     const formData = {};
 
-    // Will hold the uploaded image file
-    let uploadedFile = null;
-
     // Returns true if the screen is small (mobile)
     const isMobile = () => window.innerWidth <= 768;
 
@@ -289,9 +286,11 @@
 
     // Submit image to /api/analyze and show result in Frame 10
     async function submitImage() {
-          const fileInput = document.getElementById('takePhoto') || document.getElementById('attachPhoto');
-          const file = fileInput?.files?.[0];
-          if (!file) return alert("Please upload or take a photo first.");
+        const takePhoto = document.getElementById('takePhoto');
+        const attachPhoto = document.getElementById('attachPhoto');
+        const file = takePhoto.files[0] || attachPhoto.files[0];
+        if (!file) return alert("Please upload or take a photo first.");
+
         
           nextFrame(); // go to Frame 10
           await new Promise(resolve => setTimeout(resolve, 200)); // wait for frame to fully load
