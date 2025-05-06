@@ -289,24 +289,26 @@
 
     // Submit image to /api/analyze and show result in Frame 10
     async function submitImage() {
-            if (!uploadedFile) return alert("Please upload or take a photo first.");
-            
-              // Show analyzing first
-              nextFrame(); // switch to result screen
-              await new Promise(resolve => setTimeout(resolve, 200)); // Wait to render frame
-              
-              const form = new FormData();
-              form.append('image', uploadedFile);
-              
-              const box = document.getElementById('resultBox');
-              box.innerHTML = '<p>Analyzing...</p>';
+          const fileInput = document.getElementById('takePhoto') || document.getElementById('attachPhoto');
+          const file = fileInput?.files?.[0];
+          if (!file) return alert("Please upload or take a photo first.");
+        
+          nextFrame(); // go to Frame 10
+          await new Promise(resolve => setTimeout(resolve, 200)); // wait for frame to fully load
+        
+          const form = new FormData();
+          form.append('image', file);
+        
+          const box = document.getElementById('resultBox');
+          box.innerHTML = '<p>Analyzing...</p>';
+        
+          try {
+            const res = await fetch('/api/analyze', {
+              method: 'POST',
+              body: form
+            });
 
-      try {
-        const res = await fetch('/api/analyze', {
-          method: 'POST',
-          body: form
-        });
-        const data = await res.json();
+    const data = await res.json();
 
          if (data.error_code === 0 && data.result) {
           const result = data.result;
@@ -398,10 +400,10 @@
         } else {
           box.innerHTML = `<p>❌ Error: ${data.message || data.error_msg || 'No result returned'}</p>`;
         }
-      } catch (err) {
-        box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
-      }
-    }
+            } catch (err) {
+            box.innerHTML = `<p>❌ Network or server error: ${err.message}</p>`;
+          }
+        }
 
     // Load the first frame on page load
     renderFrame();
