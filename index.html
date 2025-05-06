@@ -289,13 +289,17 @@
 
     // Submit image to /api/analyze and show result in Frame 10
     async function submitImage() {
-      if (!uploadedFile) return alert("Please upload or take a photo first.");
-      const form = new FormData();
-        form.append('image', uploadedFile);
-        nextFrame(); // go to Frame 10
-        
-        const box = document.getElementById('resultBox');
-        box.innerHTML = '<p>Analyzing...</p>';
+            if (!uploadedFile) return alert("Please upload or take a photo first.");
+            
+              // Show analyzing first
+              nextFrame(); // switch to result screen
+              await new Promise(resolve => setTimeout(resolve, 200)); // Wait to render frame
+              
+              const form = new FormData();
+              form.append('image', uploadedFile);
+              
+              const box = document.getElementById('resultBox');
+              box.innerHTML = '<p>Analyzing...</p>';
 
       try {
         const res = await fetch('/api/analyze', {
