@@ -286,13 +286,11 @@
 
 
     // Submit image to /api/analyze and show result in Frame 10
-    async function submitImage() {
-      const takePhoto = document.getElementById('takePhoto');
-      const attachPhoto = document.getElementById('attachPhoto');
-      const file = takePhoto.files[0] || attachPhoto.files[0];
-      if (!file) return alert("Please upload or take a photo first.");
+   async function submitImage() {
+      if (!uploadedFile) return alert("Please upload or take a photo first.");
       const form = new FormData();
-      form.append('image', file);
+      form.append('image', uploadedFile);
+
 
         nextFrame(); // go to Frame 10
         
