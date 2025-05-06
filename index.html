@@ -273,16 +273,16 @@
 
     // Preview uploaded/taken image
    function handleImage(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const preview = document.getElementById('preview');
-          preview.src = e.target.result;
-          preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
+      uploadedFile = e.target.files[0];  // ✅ Store selected image globally
+      if (!uploadedFile) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(uploadedFile); // ✅ Use uploadedFile here too
+    }
 
 
     // Submit image to /api/analyze and show result in Frame 10
