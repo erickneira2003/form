@@ -220,8 +220,8 @@
           <h2>Please upload or take a photo</h2>
           <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
           <button onclick="document.getElementById('attachPhoto').click()">📂 Attach Your Photo</button>
-          <input type="file" id="takePhoto" accept="image/*" capture="environment" onchange="handleImage(event)">
-          <input type="file" id="attachPhoto" accept="image/*" onchange="handleImage(event)">
+          <input type="file" id="takePhoto" accept="image/jpeg,image/jpg" capture="environment">
+          <input type="file" id="attachPhoto" accept="image/jpeg,image/jpg">
           <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
           <button onclick="submitImage()">Analyze</button>
         </div>`
