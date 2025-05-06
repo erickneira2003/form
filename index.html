@@ -104,9 +104,6 @@
     // Stores answers from frames 2 to 8
     const formData = {};
 
-    // Will hold the uploaded image file
-    let uploadedFile = null;
-
     // Returns true if the screen is small (mobile)
     const isMobile = () => window.innerWidth <= 768;
 
@@ -275,23 +272,28 @@
     }
 
     // Preview uploaded/taken image
-    function handleImage(e) {
-      uploadedFile = e.target.files[0];
-      if (!uploadedFile) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const preview = document.getElementById('preview');
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(uploadedFile);
-    }
+   function handleImage(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const preview = document.getElementById('preview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+
 
     // Submit image to /api/analyze and show result in Frame 10
     async function submitImage() {
-      if (!uploadedFile) return alert("Please upload or take a photo first.");
+      const takePhoto = document.getElementById('takePhoto');
+      const attachPhoto = document.getElementById('attachPhoto');
+      const file = takePhoto.files[0] || attachPhoto.files[0];
+      if (!file) return alert("Please upload or take a photo first.");
       const form = new FormData();
-        form.append('image', uploadedFile);
+      form.append('image', file);
+
         nextFrame(); // go to Frame 10
         
         const box = document.getElementById('resultBox');
