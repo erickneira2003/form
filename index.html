@@ -104,6 +104,9 @@
     // Stores answers from frames 2 to 8
     const formData = {};
 
+    // Will hold the uploaded image file
+    let uploadedFile = null;
+
     // Returns true if the screen is small (mobile)
     const isMobile = () => window.innerWidth <= 768;
 
@@ -220,8 +223,8 @@
           <h2>Please upload or take a photo</h2>
           <button onclick="document.getElementById('takePhoto').click()">📸 Take a Selfie</button>
           <button onclick="document.getElementById('attachPhoto').click()">📂 Attach Your Photo</button>
-          <input type="file" id="takePhoto" accept="image/jpeg" capture="environment" onchange="handleImage(event)">
-          <input type="file" id="attachPhoto" accept="image/jpeg" onchange="handleImage(event)">
+          <input type="file" id="takePhoto" accept="image/*" capture="environment" onchange="handleImage(event)">
+          <input type="file" id="attachPhoto" accept="image/*" onchange="handleImage(event)">
           <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
           <button onclick="submitImage()">Analyze</button>
         </div>`
@@ -272,8 +275,8 @@
     }
 
     // Preview uploaded/taken image
-   function handleImage(e) {
-      uploadedFile = e.target.files[0];  // ✅ Store selected image globally
+    function handleImage(e) {
+      uploadedFile = e.target.files[0];
       if (!uploadedFile) return;
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -281,17 +284,14 @@
         preview.src = e.target.result;
         preview.style.display = 'block';
       };
-      reader.readAsDataURL(uploadedFile); // ✅ Use uploadedFile here too
+      reader.readAsDataURL(uploadedFile);
     }
 
-
     // Submit image to /api/analyze and show result in Frame 10
-   async function submitImage() {
+    async function submitImage() {
       if (!uploadedFile) return alert("Please upload or take a photo first.");
       const form = new FormData();
-      form.append('image', uploadedFile);
-
-
+        form.append('image', uploadedFile);
         nextFrame(); // go to Frame 10
         
         const box = document.getElementById('resultBox');
@@ -403,6 +403,8 @@
     renderFrame();
   </script>
 </body>
+</html>
+
 
 
 
